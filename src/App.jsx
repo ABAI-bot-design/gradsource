@@ -49,7 +49,11 @@ const UK_UNIVERSITIES = ['Abertay University','Aberystwyth University','Anglia R
 
 async function addToBrevo({ email, name, role, university }) {
   const listIds = role === 'employer' ? [4] : [3]
-  console.log('university:', university)
+  const requestBody = { email, attributes: { FIRSTNAME: name, UNIVERSITY: university }, listIds, updateEnabled: true }
+  console.log('[Brevo] email:', email)
+  console.log('[Brevo] name:', name)
+  console.log('[Brevo] university:', university)
+  console.log('[Brevo] full request body:', JSON.stringify(requestBody, null, 2))
   const res = await fetch('https://api.brevo.com/v3/contacts', {
     method: 'POST',
     headers: {
@@ -57,9 +61,15 @@ async function addToBrevo({ email, name, role, university }) {
       'content-type': 'application/json',
       'api-key': BREVO_API_KEY,
     },
-    body: JSON.stringify({ email, attributes: { FIRSTNAME: name, UNIVERSITY: university }, listIds, updateEnabled: true }),
+    body: JSON.stringify(requestBody),
   })
-  if (!res.ok && res.status !== 204) throw new Error('Brevo error')
+  console.log('[Brevo] response status:', res.status)
+  const responseText = await res.text()
+  console.log('[Brevo] response body:', responseText)
+  if (!res.ok && res.status !== 204) {
+    console.error('[Brevo] error detail:', responseText)
+    throw new Error('Brevo error')
+  }
 }
 
 function useScrollAnimation() {
