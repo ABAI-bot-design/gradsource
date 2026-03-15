@@ -45,8 +45,11 @@ body { background: #FFFFFF; font-family: 'DM Sans', sans-serif; color: #0A0F1E; 
 
 const BREVO_API_KEY = import.meta.env.VITE_BREVO_API_KEY
 
-async function addToBrevo({ email, name, role }) {
+const UK_UNIVERSITIES = ['Abertay University','Aberystwyth University','Anglia Ruskin University','Arts University Bournemouth','Aston University','Bangor University','Bath Spa University','Birmingham City University','Bishop Grosseteste University','Bournemouth University','Brunel University London','Buckinghamshire New University','Canterbury Christ Church University','Cardiff Metropolitan University','Cardiff University','City University of London','Coventry University','De Montfort University','Durham University','Edge Hill University','Edinburgh Napier University','Falmouth University','Glasgow Caledonian University','Glasgow School of Art','Goldsmiths University of London','Heriot-Watt University','Imperial College London','Keele University','King\'s College London','Kingston University','Lancaster University','Leeds Arts University','Leeds Beckett University','Leeds Trinity University','Liverpool Hope University','Liverpool John Moores University','London Metropolitan University','London South Bank University','Loughborough University','Manchester Metropolitan University','Middlesex University','Newcastle University','Newman University','Northumbria University','Norwich University of the Arts','Nottingham Trent University','Open University','Oxford Brookes University','Queen Margaret University Edinburgh','Queen Mary University of London','Queen\'s University Belfast','Robert Gordon University','Roehampton University','Royal Agricultural University','Royal College of Art','Royal Holloway University of London','Sheffield Hallam University','Southampton Solent University','St George\'s University of London','St Mary\'s University Twickenham','Staffordshire University','Swansea University','Teesside University','Ulster University','University College London','University for the Creative Arts','University of Aberdeen','University of Bath','University of Bedfordshire','University of Birmingham','University of Bolton','University of Bradford','University of Brighton','University of Bristol','University of Buckingham','University of Cambridge','University of Central Lancashire','University of Chester','University of Chichester','University of Cumbria','University of Derby','University of Dundee','University of East Anglia','University of East London','University of Edinburgh','University of Essex','University of Exeter','University of Glasgow','University of Gloucestershire','University of Greenwich','University of Hertfordshire','University of Huddersfield','University of Hull','University of Kent','University of Leeds','University of Leicester','University of Lincoln','University of Liverpool','University of Manchester','University of Northampton','University of Nottingham','University of Oxford','University of Plymouth','University of Portsmouth','University of Reading','University of Salford','University of Sheffield','University of South Wales','University of Southampton','University of St Andrews','University of Stirling','University of Strathclyde','University of Suffolk','University of Sunderland','University of Surrey','University of Sussex','University of the Arts London','University of the Highlands and Islands','University of the West of England','University of the West of Scotland','University of Wales Trinity Saint David','University of Warwick','University of West London','University of Westminster','University of Winchester','University of Wolverhampton','University of Worcester','University of York','Wrexham Glyndwr University','York St John University','Other']
+
+async function addToBrevo({ email, name, role, university }) {
   const listIds = role === 'employer' ? [4] : [3]
+  console.log('university:', university)
   const res = await fetch('https://api.brevo.com/v3/contacts', {
     method: 'POST',
     headers: {
@@ -54,7 +57,7 @@ async function addToBrevo({ email, name, role }) {
       'content-type': 'application/json',
       'api-key': BREVO_API_KEY,
     },
-    body: JSON.stringify({ email, attributes: { FIRSTNAME: name }, listIds, updateEnabled: true }),
+    body: JSON.stringify({ email, attributes: { FIRSTNAME: name, UNIVERSITY: university }, listIds, updateEnabled: true }),
   })
   if (!res.ok && res.status !== 204) throw new Error('Brevo error')
 }
@@ -1146,7 +1149,8 @@ function Waitlist() {
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-  const [form, setForm] = useState({ name: '', email: '', university: '', company: '', size: '' })
+  const [form, setForm] = useState({ name: '', email: '', company: '', size: '' })
+  const [university, setUniversity] = useState('')
   const ref = useScrollAnimation()
 
   const handleSubmit = async (e) => {
@@ -1154,7 +1158,8 @@ function Waitlist() {
     setLoading(true)
     setError(null)
     try {
-      await addToBrevo({ email: form.email, name: form.name, role: tab })
+      console.log('university:', university)
+      await addToBrevo({ email: form.email, name: form.name, role: tab, university: university || undefined })
       setCount(c => c + 1)
       setSubmitted(true)
     } catch {
@@ -1202,15 +1207,23 @@ function Waitlist() {
                 {[
                   { key: 'name', label: 'Full Name', placeholder: 'Your name', required: true },
                   { key: 'email', label: 'Email Address', placeholder: 'your@email.com', type: 'email', required: true },
-                  ...(tab === 'candidate' ? [{ key: 'university', label: 'University (optional)', placeholder: 'e.g. London School of Economics' }] : [
+                  ...(tab === 'candidate' ? [{ key: 'university', label: 'University (optional)', select: true }] : [
                     { key: 'company', label: 'Company Name', placeholder: 'e.g. Apex Capital', required: true },
                   ]),
                 ].map(f => (
                   <div key={f.key} style={{ marginBottom: 16 }}>
                     <label style={{ display: 'block', color: '#475569', fontSize: 12, marginBottom: 6, fontWeight: 500 }}>{f.label}</label>
-                    <input type={f.type || 'text'} required={f.required} placeholder={f.placeholder}
-                      value={form[f.key]} onChange={e => setForm(prev => ({ ...prev, [f.key]: e.target.value }))}
-                      style={{ width: '100%', background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.12)', borderRadius: 8, padding: '11px 14px', color: '#0A0F1E', fontSize: 14, outline: 'none', fontFamily: 'DM Sans, sans-serif' }} />
+                    {f.select ? (
+                      <select value={university} onChange={e => setUniversity(e.target.value)}
+                        style={{ width: '100%', background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.12)', borderRadius: 8, padding: '11px 14px', color: university ? '#0A0F1E' : '#64748b', fontSize: 14, outline: 'none', fontFamily: 'DM Sans, sans-serif' }}>
+                        <option value="">Select your university</option>
+                        {UK_UNIVERSITIES.map(u => <option key={u} value={u}>{u}</option>)}
+                      </select>
+                    ) : (
+                      <input type={f.type || 'text'} required={f.required} placeholder={f.placeholder}
+                        value={form[f.key]} onChange={e => setForm(prev => ({ ...prev, [f.key]: e.target.value }))}
+                        style={{ width: '100%', background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.12)', borderRadius: 8, padding: '11px 14px', color: '#0A0F1E', fontSize: 14, outline: 'none', fontFamily: 'DM Sans, sans-serif' }} />
+                    )}
                   </div>
                 ))}
                 {tab === 'employer' && (
@@ -1334,7 +1347,7 @@ function WaitlistModal({ open, onClose }) {
     setLoading(true)
     setError(null)
     try {
-      await addToBrevo({ email: form.email, name: form.name, role: tab })
+      await addToBrevo({ email: form.email, name: form.name, role: tab, university: form.university || undefined })
       setCount(c => c + 1)
       setSubmitted(true)
     } catch {
@@ -1370,15 +1383,23 @@ function WaitlistModal({ open, onClose }) {
               {[
                 { key: 'name', label: 'Full Name', placeholder: 'Your name', required: true },
                 { key: 'email', label: 'Email', placeholder: 'your@email.com', type: 'email', required: true },
-                ...(tab === 'candidate' ? [{ key: 'university', label: 'University (optional)', placeholder: 'e.g. LSE' }] : [
+                ...(tab === 'candidate' ? [{ key: 'university', label: 'University (optional)', select: true }] : [
                   { key: 'company', label: 'Company', placeholder: 'e.g. Apex Capital', required: true },
                 ]),
               ].map(f => (
                 <div key={f.key} style={{ marginBottom: 14 }}>
                   <label style={{ display: 'block', color: '#475569', fontSize: 12, marginBottom: 5 }}>{f.label}</label>
-                  <input type={f.type || 'text'} required={f.required} placeholder={f.placeholder}
-                    value={form[f.key]} onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))}
-                    style={{ width: '100%', background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.12)', borderRadius: 8, padding: '10px 13px', color: '#0A0F1E', fontSize: 14, outline: 'none', fontFamily: 'DM Sans, sans-serif' }} />
+                  {f.select ? (
+                    <select value={form[f.key]} onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))}
+                      style={{ width: '100%', background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.12)', borderRadius: 8, padding: '10px 13px', color: form[f.key] ? '#0A0F1E' : '#64748b', fontSize: 14, outline: 'none', fontFamily: 'DM Sans, sans-serif' }}>
+                      <option value="">Select your university</option>
+                      {UK_UNIVERSITIES.map(u => <option key={u} value={u}>{u}</option>)}
+                    </select>
+                  ) : (
+                    <input type={f.type || 'text'} required={f.required} placeholder={f.placeholder}
+                      value={form[f.key]} onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))}
+                      style={{ width: '100%', background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.12)', borderRadius: 8, padding: '10px 13px', color: '#0A0F1E', fontSize: 14, outline: 'none', fontFamily: 'DM Sans, sans-serif' }} />
+                  )}
                 </div>
               ))}
               {tab === 'employer' && (
@@ -1442,7 +1463,7 @@ function CandidatePage({ onBack, onWaitlist }) {
     setSignupLoading(true)
     setSignupError(null)
     try {
-      await addToBrevo({ email: signupForm.email, name: signupForm.name, role: 'candidate' })
+      await addToBrevo({ email: signupForm.email, name: signupForm.name, role: 'candidate', university: signupForm.university || undefined })
       setSignupCount(c => c + 1)
       setSignupSubmitted(true)
     } catch {
@@ -1538,12 +1559,20 @@ function CandidatePage({ onBack, onWaitlist }) {
           <div className="glow-border-gold" style={{ background: '#FFFFFF', borderRadius: 20, overflow: 'hidden' }}>
             {!signupSubmitted ? (
               <form onSubmit={handleSignupSubmit} style={{ padding: 36 }}>
-                {[{ key: 'name', label: 'Full Name', placeholder: 'Your name', required: true }, { key: 'email', label: 'Email Address', placeholder: 'your@email.com', type: 'email', required: true }, { key: 'university', label: 'University (optional)', placeholder: 'e.g. London School of Economics' }].map(f => (
+                {[{ key: 'name', label: 'Full Name', placeholder: 'Your name', required: true }, { key: 'email', label: 'Email Address', placeholder: 'your@email.com', type: 'email', required: true }, { key: 'university', label: 'University (optional)', select: true }].map(f => (
                   <div key={f.key} style={{ marginBottom: 16 }}>
                     <label style={{ display: 'block', color: '#475569', fontSize: 12, marginBottom: 6, fontWeight: 500 }}>{f.label}</label>
-                    <input type={f.type || 'text'} required={f.required} placeholder={f.placeholder}
-                      value={signupForm[f.key]} onChange={e => setSignupForm(p => ({ ...p, [f.key]: e.target.value }))}
-                      style={{ width: '100%', background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.12)', borderRadius: 8, padding: '11px 14px', color: '#0A0F1E', fontSize: 14, outline: 'none', fontFamily: 'DM Sans, sans-serif' }} />
+                    {f.select ? (
+                      <select value={signupForm[f.key]} onChange={e => setSignupForm(p => ({ ...p, [f.key]: e.target.value }))}
+                        style={{ width: '100%', background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.12)', borderRadius: 8, padding: '11px 14px', color: signupForm[f.key] ? '#0A0F1E' : '#64748b', fontSize: 14, outline: 'none', fontFamily: 'DM Sans, sans-serif' }}>
+                        <option value="">Select your university</option>
+                        {UK_UNIVERSITIES.map(u => <option key={u} value={u}>{u}</option>)}
+                      </select>
+                    ) : (
+                      <input type={f.type || 'text'} required={f.required} placeholder={f.placeholder}
+                        value={signupForm[f.key]} onChange={e => setSignupForm(p => ({ ...p, [f.key]: e.target.value }))}
+                        style={{ width: '100%', background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.12)', borderRadius: 8, padding: '11px 14px', color: '#0A0F1E', fontSize: 14, outline: 'none', fontFamily: 'DM Sans, sans-serif' }} />
+                    )}
                   </div>
                 ))}
                 <button type="submit" disabled={signupLoading} style={{ width: '100%', background: 'linear-gradient(135deg,#F5C842,#D4A017)', color: '#0A0F1E', border: 'none', borderRadius: 10, padding: '14px', fontSize: 15, fontWeight: 700, cursor: signupLoading ? 'not-allowed' : 'pointer', marginTop: 8, fontFamily: 'DM Sans, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, opacity: signupLoading ? 0.7 : 1 }}>
