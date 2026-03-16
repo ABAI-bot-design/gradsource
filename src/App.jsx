@@ -1525,6 +1525,8 @@ function CandidatePage({ onBack, onWaitlist }) {
         </div>
       </section>
 
+      <CandidateDemo />
+
       {/* AI Feedback benefits */}
       <section style={{ background: '#FFFFFF', padding: '80px 24px' }}>
         <div style={{ maxWidth: 900, margin: '0 auto' }}>
@@ -1843,7 +1845,6 @@ export default function App() {
               <Hero onWaitlist={openWaitlist} onNavigate={navigate} />
               <UniversityBar />
               <Problem />
-              <CandidateDemo />
               <EmployerDemo />
               <ForCandidates onWaitlist={openWaitlist} onNavigate={navigate} />
               <ForEmployers onWaitlist={openWaitlist} onNavigate={navigate} />
