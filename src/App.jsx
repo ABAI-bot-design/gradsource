@@ -361,108 +361,251 @@ function Problem() {
 }
 
 // ─── CANDIDATE DEMO ───────────────────────────────────────────────────────────
-function CandidateDemo() {
-  const [step, setStep] = useState(1)
-  const [showPass, setShowPass] = useState(false)
-  const ref = useScrollAnimation()
-
-  const Step1 = () => (
-    <div style={{ padding: 32 }}>
+function DemoStep1({ go }) {
+  return (
+    <div style={{ padding: '32px 28px' }}>
       <div style={{ textAlign: 'center', marginBottom: 28 }}>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-          <div style={{ background: 'linear-gradient(135deg,#F5C842,#D4A017)', borderRadius: 6, padding: 5, display: 'flex' }}><Zap size={14} color="#0A0F1E" /></div>
-          <span className="font-syne" style={{ color: '#0A0F1E', fontWeight: 700 }}>GradSource</span>
+          <div style={{ background: 'linear-gradient(135deg,#F5C842,#D4A017)', borderRadius: 6, padding: '5px 6px', display: 'flex' }}><Zap size={14} color="#0A0F1E" /></div>
+          <span className="font-syne" style={{ color: '#0A0F1E', fontWeight: 800, fontSize: 16 }}>GradSource</span>
         </div>
-        <p style={{ color: '#64748b', fontSize: 13 }}>Sign in to your candidate account</p>
+        <h3 className="font-syne" style={{ color: '#0A0F1E', fontWeight: 800, fontSize: 20, marginBottom: 6 }}>Welcome to GradSource</h3>
+        <p style={{ color: '#64748b', fontSize: 13 }}>Sign in to your candidate profile</p>
       </div>
-      <label style={{ display: 'block', color: '#475569', fontSize: 12, marginBottom: 6 }}>Email</label>
-      <div style={{ background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.12)', borderRadius: 8, padding: '10px 14px', marginBottom: 16, color: '#0A0F1E', fontSize: 14 }}>sophia.rhodes@lse.ac.uk</div>
-      <label style={{ display: 'block', color: '#475569', fontSize: 12, marginBottom: 6 }}>Password</label>
-      <div style={{ background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.12)', borderRadius: 8, padding: '10px 14px', marginBottom: 24, color: '#0A0F1E', fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span>{showPass ? 'password123' : '••••••••••••'}</span>
-        <button onClick={() => setShowPass(!showPass)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }}>{showPass ? <EyeOff size={14} /> : <Eye size={14} />}</button>
+      <div style={{ marginBottom: 14 }}>
+        <label style={{ display: 'block', color: '#475569', fontSize: 12, fontWeight: 600, marginBottom: 6 }}>Email</label>
+        <div style={{ background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.12)', borderRadius: 8, padding: '10px 14px', color: '#0A0F1E', fontSize: 14 }}>sophia.rhodes@lse.ac.uk</div>
       </div>
-      <button onClick={() => setStep(2)} style={{ width: '100%', background: 'linear-gradient(135deg,#F5C842,#D4A017)', color: '#0A0F1E', border: 'none', borderRadius: 8, padding: '12px', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>Sign In</button>
+      <div style={{ marginBottom: 24 }}>
+        <label style={{ display: 'block', color: '#475569', fontSize: 12, fontWeight: 600, marginBottom: 6 }}>Password</label>
+        <div style={{ background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.12)', borderRadius: 8, padding: '10px 14px', color: '#0A0F1E', fontSize: 18, letterSpacing: 4 }}>••••••••</div>
+      </div>
+      <button onClick={() => go(2)} style={{ width: '100%', background: '#00D4FF', color: '#0A0F1E', border: 'none', borderRadius: 9, padding: '13px', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif', marginBottom: 14 }}>Sign In</button>
+      <p style={{ textAlign: 'center', color: '#94A3B8', fontSize: 12 }}>New to GradSource? <span style={{ color: '#00D4FF', cursor: 'pointer' }}>Create your free profile</span></p>
     </div>
   )
+}
 
-  const Step2 = () => (
-    <div style={{ padding: 24 }}>
-      <div style={{ background: 'rgba(245,200,66,0.07)', border: '1px solid rgba(245,200,66,0.25)', borderRadius: 10, padding: 16, marginBottom: 20, display: 'flex', alignItems: 'center', gap: 14 }}>
-        <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'linear-gradient(135deg,#F5C842,#D4A017)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-          <span className="font-syne" style={{ color: '#0A0F1E', fontWeight: 800, fontSize: 16 }}>SR</span>
+function DemoStep2({ go }) {
+  const prefs = [
+    { label: 'Target Role', value: 'Financial Analyst' },
+    { label: 'Preferred Salary', value: '£28,000 — £35,000' },
+    { label: 'Location', value: 'London / Hybrid' },
+    { label: 'Target Sector', value: 'Fintech / Inv. Banking' },
+  ]
+  return (
+    <div style={{ padding: '28px 24px' }}>
+      <h3 className="font-syne" style={{ color: '#0A0F1E', fontWeight: 800, fontSize: 20, marginBottom: 6 }}>Welcome back, Sophia 👋</h3>
+      <p style={{ color: '#64748b', fontSize: 13, marginBottom: 22 }}>Tell us what you're looking for so we can match you to the right roles</p>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 24 }}>
+        {prefs.map(p => (
+          <div key={p.label} style={{ background: '#F8FAFC', border: '1.5px solid rgba(245,200,66,0.55)', borderRadius: 10, padding: '12px 14px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <div style={{ color: '#94A3B8', fontSize: 10, fontWeight: 600, marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{p.label}</div>
+                <div style={{ color: '#0A0F1E', fontSize: 12, fontWeight: 600 }}>{p.value}</div>
+              </div>
+              <CheckCircle size={14} color="#22c55e" style={{ flexShrink: 0, marginTop: 2 }} />
+            </div>
+          </div>
+        ))}
+      </div>
+      <button onClick={() => go(3)} style={{ width: '100%', background: '#0A0F1E', color: '#FFFFFF', border: 'none', borderRadius: 9, padding: '13px', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif' }}>Save Preferences →</button>
+    </div>
+  )
+}
+
+function DemoStep3({ go }) {
+  const assessments = [
+    { name: 'Aptitude Test', score: '91/100' },
+    { name: 'Financial Modelling', score: '88/100' },
+    { name: 'AI Sales Simulation', score: '85/100' },
+    { name: 'LinkedIn Profile', score: 'Connected & Verified' },
+    { name: 'CV Upload', score: 'Uploaded' },
+  ]
+  return (
+    <div style={{ padding: '28px 20px' }}>
+      <h3 className="font-syne" style={{ color: '#0A0F1E', fontWeight: 800, fontSize: 18, marginBottom: 4 }}>Your Assessment Hub</h3>
+      <p style={{ color: '#64748b', fontSize: 12, marginBottom: 20 }}>Complete your assessments once. Get matched with hundreds of roles.</p>
+      <div style={{ marginBottom: 24 }}>
+        {assessments.map(a => (
+          <div key={a.name} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.07)', borderRadius: 8, marginBottom: 7 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <CheckCircle size={14} color="#22c55e" />
+              <span style={{ color: '#0A0F1E', fontSize: 13, fontWeight: 500 }}>{a.name}</span>
+            </div>
+            <span style={{ background: 'rgba(245,200,66,0.14)', border: '1px solid rgba(245,200,66,0.4)', color: '#D4A017', borderRadius: 6, padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>{a.score}</span>
+          </div>
+        ))}
+      </div>
+      <button onClick={() => go(4)} style={{ width: '100%', background: 'linear-gradient(135deg,#F5C842,#D4A017)', color: '#0A0F1E', border: 'none', borderRadius: 9, padding: '13px', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif' }}>View My Results →</button>
+    </div>
+  )
+}
+
+function DemoStep4({ go }) {
+  const bars = [
+    { label: 'Aptitude', score: 91, pct: 91 },
+    { label: 'Financial Modelling', score: 88, pct: 88 },
+    { label: 'Sales Simulation', score: 85, pct: 85 },
+    { label: 'LinkedIn', score: 88, pct: 88 },
+  ]
+  return (
+    <div style={{ padding: '22px 18px' }}>
+      <h3 className="font-syne" style={{ color: '#0A0F1E', fontWeight: 800, fontSize: 18, marginBottom: 4 }}>Your GradSource Score</h3>
+      <p style={{ color: '#64748b', fontSize: 12, marginBottom: 16 }}>Here's how you performed — and what to do next</p>
+      <div style={{ background: '#0A0F1E', border: '1px solid rgba(245,200,66,0.35)', borderRadius: 12, padding: '16px', display: 'flex', alignItems: 'center', gap: 16, marginBottom: 16 }}>
+        <div style={{ flexShrink: 0, width: 68, height: 68, borderRadius: '50%', border: '3px solid #F5C842', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <span className="font-syne" style={{ color: '#F5C842', fontWeight: 800, fontSize: 22, lineHeight: 1 }}>91</span>
+          <span style={{ color: '#94A3B8', fontSize: 10 }}>/100</span>
         </div>
         <div>
-          <div style={{ color: '#0A0F1E', fontWeight: 600, fontSize: 15 }}>Welcome back, Sophia 👋</div>
-          <div style={{ color: '#64748b', fontSize: 12 }}>LSE · BSc Finance · Graduate 2024</div>
+          <div className="font-syne" style={{ color: '#F5C842', fontWeight: 800, fontSize: 15, marginBottom: 4 }}>Top 8% of all candidates</div>
+          <div style={{ color: '#94A3B8', fontSize: 12 }}>Overall GradSource Score</div>
         </div>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 20 }}>
+      <div style={{ marginBottom: 14 }}>
+        {bars.map(b => (
+          <div key={b.label} style={{ marginBottom: 9 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+              <span style={{ fontSize: 12, color: '#475569' }}>{b.label}</span>
+              <span style={{ fontSize: 11, fontWeight: 600, color: '#0A0F1E' }}>{b.score}</span>
+            </div>
+            <div style={{ height: 5, background: '#F1F5F9', borderRadius: 3 }}>
+              <div style={{ height: '100%', width: `${b.pct}%`, background: '#00D4FF', borderRadius: 3 }} />
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{ borderLeft: '3px solid #F5C842', background: 'rgba(245,200,66,0.04)', borderRadius: '0 8px 8px 0', padding: '12px', marginBottom: 14 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: '#D4A017', marginBottom: 9 }}>💡 Your AI Feedback Report</div>
         {[
-          { label: 'LinkedIn Connected', color: '#00D4FF', borderRgb: '0,212,255', icon: <Linkedin size={14} />, val: '✓ Connected' },
-          { label: 'Aptitude Test', color: '#D4A017', borderRgb: '212,160,23', icon: <Brain size={14} />, val: '91/100' },
-          { label: 'Financial Modelling', color: '#D4A017', borderRgb: '212,160,23', icon: <BarChart2 size={14} />, val: '88/100' },
-          { label: 'AI Sales Simulation', color: '#D4A017', borderRgb: '212,160,23', icon: <Sparkles size={14} />, val: null, pulse: true },
-        ].map(c => (
-          <div key={c.label} style={{ background: '#F8FAFC', border: `1px solid rgba(${c.borderRgb},0.25)`, borderRadius: 8, padding: 12 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6, color: c.color }}>{c.icon}<span style={{ fontSize: 10, fontWeight: 600 }}>{c.label.toUpperCase()}</span></div>
-            {c.pulse ? (
-              <button className="pulse-ring" style={{ background: 'rgba(245,200,66,0.12)', border: '1px solid rgba(245,200,66,0.4)', color: '#D4A017', borderRadius: 6, padding: '4px 10px', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>Start Now</button>
-            ) : (
-              <div style={{ color: '#0A0F1E', fontWeight: 700, fontSize: 14 }}>{c.val}</div>
-            )}
+          ['✅', 'Strong quantitative reasoning — top 12% of applicants'],
+          ['✅', 'Financial modelling accuracy above average for your target sector'],
+          ['✅', 'Sales simulation score puts you in the top 15% of applicants'],
+        ].map(([icon, text]) => (
+          <div key={text} style={{ display: 'flex', gap: 7, marginBottom: 6, fontSize: 11, color: '#475569', lineHeight: 1.5 }}>
+            <span style={{ flexShrink: 0 }}>{icon}</span><span>{text}</span>
+          </div>
+        ))}
+        <div style={{ background: 'rgba(0,212,255,0.07)', border: '1px solid rgba(0,212,255,0.2)', borderRadius: 7, padding: '9px 10px', marginTop: 9 }}>
+          <p style={{ fontSize: 11, color: '#0A0F1E', lineHeight: 1.5 }}>📊 Employers in fintech are currently prioritising: Excel modelling, regulatory awareness and stakeholder communication</p>
+        </div>
+      </div>
+      <button onClick={() => go(5)} style={{ width: '100%', background: 'linear-gradient(135deg,#F5C842,#D4A017)', color: '#0A0F1E', border: 'none', borderRadius: 9, padding: '13px', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif' }}>See Your Matched Roles →</button>
+    </div>
+  )
+}
+
+function DemoStep5({ go, dismissedCards, dismissCard, toast }) {
+  const jobs = [
+    { role: 'Junior Financial Analyst', company: 'Apex Capital', meta: 'Fintech · London', match: 97, criteria: ['✅ Aptitude top 20%', '✅ Financial Modelling top 10%', '✅ Location match'] },
+    { role: 'Graduate Risk Associate', company: 'Meridian Bank', meta: 'Financial Services · London', match: 91, criteria: ['✅ Aptitude top 20%', '✅ LinkedIn active', '✅ Sector match'] },
+    { role: 'Sales & Trading Analyst', company: 'Vortex Markets', meta: 'Investment Banking · Hybrid', match: 84, criteria: ['✅ CV experience match', '✅ Sector match', '✅ Sales Simulation top 15%'] },
+  ]
+  const allGone = jobs.every((_, i) => dismissedCards.includes(i))
+  return (
+    <div style={{ padding: '22px 18px', position: 'relative', minHeight: 260 }}>
+      <h3 className="font-syne" style={{ color: '#0A0F1E', fontWeight: 800, fontSize: 18, marginBottom: 4 }}>Roles Matched to Your Profile</h3>
+      <p style={{ color: '#64748b', fontSize: 12, marginBottom: 16 }}>Based on your scores and preferences — ranked by match %</p>
+      {jobs.map((job, i) => {
+        const dismissed = dismissedCards.includes(i)
+        return (
+          <div key={job.role} style={{ background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.08)', borderRadius: 10, overflow: 'hidden', maxHeight: dismissed ? 0 : 220, opacity: dismissed ? 0 : 1, marginBottom: dismissed ? 0 : 10, transition: 'all 0.4s ease' }}>
+            <div style={{ padding: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 7 }}>
+                <div>
+                  <div className="font-syne" style={{ color: '#0A0F1E', fontWeight: 700, fontSize: 13 }}>{job.role}</div>
+                  <div style={{ color: '#64748b', fontSize: 11 }}>{job.company} · {job.meta}</div>
+                </div>
+                <span style={{ background: 'rgba(245,200,66,0.15)', border: '1px solid rgba(245,200,66,0.4)', color: '#D4A017', borderRadius: 8, padding: '3px 9px', fontSize: 12, fontWeight: 800, flexShrink: 0 }}>{job.match}%</span>
+              </div>
+              <div style={{ marginBottom: 9 }}>
+                {job.criteria.map(c => <div key={c} style={{ fontSize: 11, color: '#475569', marginBottom: 2 }}>{c}</div>)}
+              </div>
+              <div style={{ display: 'flex', gap: 7 }}>
+                <button onClick={() => go(6)} style={{ flex: 1, background: '#00D4FF', color: '#0A0F1E', border: 'none', borderRadius: 7, padding: '7px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif' }}>I'm Interested →</button>
+                <button onClick={() => dismissCard(i)} style={{ flex: 1, background: 'none', color: '#64748b', border: '1px solid rgba(0,0,0,0.12)', borderRadius: 7, padding: '7px', fontSize: 12, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif' }}>Not For Me</button>
+              </div>
+            </div>
+          </div>
+        )
+      })}
+      {allGone && (
+        <div style={{ textAlign: 'center', padding: '28px 12px' }}>
+          <p style={{ color: '#475569', fontSize: 13, lineHeight: 1.6 }}>All roles reviewed — click "I'm Interested" on a role to continue.</p>
+        </div>
+      )}
+      {toast && (
+        <div className="toast" style={{ position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)', background: '#0A0F1E', color: '#F1F5F9', borderRadius: 8, padding: '7px 18px', fontSize: 12, whiteSpace: 'nowrap', zIndex: 10 }}>{toast}</div>
+      )}
+    </div>
+  )
+}
+
+function DemoStep6({ go, restart }) {
+  return (
+    <div style={{ padding: '24px 18px' }}>
+      <div style={{ textAlign: 'center', marginBottom: 16 }}>
+        <div className="float" style={{ fontSize: 48, lineHeight: 1, marginBottom: 10 }}>🏆</div>
+        <h3 className="font-syne" style={{ color: '#D4A017', fontWeight: 800, fontSize: 20, lineHeight: 1.15, marginBottom: 10 }}>You're in the Top 5%<br />of Candidates</h3>
+        <p style={{ color: '#475569', fontSize: 12, lineHeight: 1.6 }}>Your profile has been shared with the Apex Capital hiring team. Your identity was only revealed because you expressed interest — keeping you in full control at every stage.</p>
+      </div>
+      <div style={{ background: '#0A0F1E', border: '1px solid rgba(245,200,66,0.35)', borderRadius: 10, padding: '14px', marginBottom: 12 }}>
+        <div className="font-syne" style={{ color: '#F5C842', fontWeight: 800, fontSize: 13, marginBottom: 8 }}>Your Rank: #3 of 247 applicants</div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginBottom: 7, fontSize: 11 }}>
+          {[['Aptitude', '91'], ['Modelling', '88'], ['LinkedIn', '88'], ['Simulation', '85']].map(([k, v]) => (
+            <span key={k}><span style={{ color: '#94A3B8' }}>{k} </span><span style={{ color: '#F5C842', fontWeight: 700 }}>{v}</span></span>
+          ))}
+        </div>
+        <div style={{ color: '#94A3B8', fontSize: 11 }}>All assessments complete — fully matched to this role</div>
+      </div>
+      <div style={{ marginBottom: 12 }}>
+        {[
+          ['✅', 'Profile matched to role'],
+          ['✅', 'Interest expressed — identity shared'],
+          ['⏳', 'Hiring team reviewing — expect contact within 5 days'],
+        ].map(([icon, label]) => (
+          <div key={label} style={{ display: 'flex', gap: 9, marginBottom: 7, fontSize: 12, color: '#475569', lineHeight: 1.5, alignItems: 'flex-start' }}>
+            <span>{icon}</span><span>{label}</span>
           </div>
         ))}
       </div>
-      <button onClick={() => setStep(3)} style={{ width: '100%', background: 'linear-gradient(135deg,#F5C842,#D4A017)', color: '#0A0F1E', border: 'none', borderRadius: 8, padding: '11px', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>View Matched Roles →</button>
-    </div>
-  )
-
-  const Step3 = () => (
-    <div style={{ padding: 24 }}>
-      <h3 className="font-syne" style={{ color: '#0A0F1E', fontWeight: 700, marginBottom: 16, fontSize: 15 }}>Your Matched Roles</h3>
-      {[
-        { role: 'Junior Financial Analyst', company: 'Apex Capital', match: 97, color: '#D4A017' },
-        { role: 'Graduate Risk Associate', company: 'Meridian Bank', match: 91, color: '#1E3A5F' },
-        { role: 'Sales & Trading Analyst', company: 'Vortex Markets', match: 84, color: '#64748b' },
-      ].map(job => (
-        <div key={job.role} style={{ background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.08)', borderRadius: 10, padding: 14, marginBottom: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-          <div>
-            <div style={{ color: '#0A0F1E', fontWeight: 600, fontSize: 13 }}>{job.role}</div>
-            <div style={{ color: '#64748b', fontSize: 11 }}>{job.company}</div>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
-            <span style={{ color: job.color, fontWeight: 700, fontSize: 13 }}>{job.match}% match</span>
-            <button onClick={() => setStep(4)} style={{ background: 'rgba(245,200,66,0.1)', color: '#D4A017', border: '1px solid rgba(245,200,66,0.35)', borderRadius: 6, padding: '5px 10px', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>I'm Interested</button>
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-
-  const Step4 = () => (
-    <div style={{ padding: 28, textAlign: 'center' }}>
-      <div style={{ fontSize: 40, marginBottom: 8 }}>🏆</div>
-      <div className="font-syne" style={{ color: '#D4A017', fontSize: 17, fontWeight: 800, marginBottom: 4 }}>You're in the Top 5% of Candidates</div>
-      <div style={{ color: '#64748b', fontSize: 13, marginBottom: 20 }}>Overall Rank <span style={{ color: '#D4A017', fontWeight: 700 }}>#3</span> of 247</div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 16, textAlign: 'left' }}>
-        {[['LinkedIn', 88], ['Aptitude', 91], ['Technical', 88], ['Simulation', '—']].map(([k, v]) => (
-          <div key={k} style={{ background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.08)', borderRadius: 8, padding: '10px 12px' }}>
-            <div style={{ color: '#64748b', fontSize: 10, marginBottom: 4 }}>{k.toUpperCase()}</div>
-            <div style={{ color: '#0A0F1E', fontWeight: 700, fontSize: 16 }}>{v}</div>
-          </div>
-        ))}
+      <div style={{ border: '1px solid rgba(0,212,255,0.3)', background: 'rgba(0,212,255,0.04)', borderRadius: 8, padding: '11px 12px', marginBottom: 14 }}>
+        <p style={{ fontSize: 11, color: '#475569', lineHeight: 1.55 }}>💡 Apex Capital is actively prioritising candidates with strong financial modelling scores. Your score of 88 puts you in the top 10% of all applicants for this role.</p>
       </div>
-      <div style={{ background: 'rgba(245,200,66,0.06)', border: '1px solid rgba(245,200,66,0.3)', borderRadius: 10, padding: 14, textAlign: 'left', marginBottom: 16 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-          <Brain size={13} color="#D4A017" />
-          <span style={{ color: '#D4A017', fontSize: 12, fontWeight: 600 }}>AI Insight</span>
-        </div>
-        <p style={{ color: '#475569', fontSize: 12, lineHeight: 1.6 }}>Boutique firms are currently prioritising financial modelling and regulatory awareness. Complete your simulation to move to <span style={{ color: '#D4A017', fontWeight: 600 }}>#1</span> and unlock pre-screened matches.</p>
+      <div style={{ background: 'rgba(34,197,94,0.07)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: 9, padding: '13px 14px', marginBottom: 16, textAlign: 'center' }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: '#15803d', marginBottom: 2 }}>✅ Complete</div>
+        <div style={{ fontSize: 12, color: '#475569' }}>Apex Capital will be in touch within 5 days</div>
       </div>
-      <button onClick={() => setStep(1)} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', fontSize: 13, textDecoration: 'underline' }}>Restart Demo</button>
+      <button onClick={restart} style={{ width: '100%', background: 'none', color: '#94A3B8', border: '1px solid rgba(0,0,0,0.1)', borderRadius: 9, padding: '11px', fontSize: 13, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif' }}>↩ Restart Demo</button>
     </div>
   )
+}
+
+function CandidateDemo() {
+  const [step, setStep] = useState(1)
+  const [fade, setFade] = useState(true)
+  const [dismissedCards, setDismissedCards] = useState([])
+  const [toast, setToast] = useState(null)
+  const ref = useScrollAnimation()
+
+  const go = (nextStep) => {
+    setFade(false)
+    setTimeout(() => { setStep(nextStep); setFade(true) }, 300)
+  }
+
+  const restart = () => { setDismissedCards([]); go(1) }
+
+  const showToast = (msg) => {
+    setToast(msg)
+    setTimeout(() => setToast(null), 3000)
+  }
+
+  const dismissCard = (idx) => {
+    setDismissedCards(prev => [...prev, idx])
+    showToast('Role removed from your feed')
+  }
 
   return (
     <section ref={ref} style={{ padding: '100px 24px', background: '#F8FAFC' }}>
@@ -471,29 +614,50 @@ function CandidateDemo() {
           <div style={{ display: 'inline-block', background: 'rgba(245,200,66,0.1)', border: '1px solid rgba(245,200,66,0.3)', borderRadius: 100, padding: '5px 16px', marginBottom: 16 }}>
             <span style={{ fontSize: 12, color: '#D4A017', fontWeight: 600 }}>CANDIDATE EXPERIENCE</span>
           </div>
-          <h2 className="font-syne" style={{ fontSize: 'clamp(26px,4vw,44px)', fontWeight: 800, color: '#0A0F1E' }}>See It From a<br /><span style={{ background: 'linear-gradient(135deg,#F5C842,#D4A017)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Graduate's Perspective</span></h2>
+          <h2 className="font-syne" style={{ fontSize: 'clamp(26px,4vw,44px)', fontWeight: 800, color: '#0A0F1E' }}>
+            See GradSource in Action —<br />
+            <span style={{ background: 'linear-gradient(135deg,#F5C842,#D4A017)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Candidate View</span>
+          </h2>
         </div>
         <div className="fade-up" style={{ display: 'flex', justifyContent: 'center' }}>
-          <div style={{ width: '100%', maxWidth: 480 }}>
-            <div className="glow-border-gold" style={{ borderRadius: 16, background: '#FFFFFF', overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.08)' }}>
-              <div style={{ background: '#F8FAFC', padding: '12px 16px', borderBottom: '1px solid rgba(0,0,0,0.08)', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#ff5f57' }} />
-                <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#febc2e' }} />
-                <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#28c840' }} />
-                <span style={{ marginLeft: 8, fontSize: 12, color: '#64748b' }}>app.gradsource.io/candidate</span>
+          <div style={{ width: '100%', maxWidth: 600 }}>
+            <div className="glow-border-gold" style={{ borderRadius: 16, background: '#FFFFFF', overflow: 'hidden', boxShadow: '0 12px 48px rgba(0,0,0,0.12)', position: 'relative', height: 700, display: 'flex', flexDirection: 'column' }}>
+              {/* Browser title bar — fixed top */}
+              <div style={{ flexShrink: 0, background: '#F1F5F9', padding: '10px 14px', borderBottom: '1px solid rgba(0,0,0,0.07)', display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  <div style={{ width: 11, height: 11, borderRadius: '50%', background: '#ff5f57' }} />
+                  <div style={{ width: 11, height: 11, borderRadius: '50%', background: '#febc2e' }} />
+                  <div style={{ width: 11, height: 11, borderRadius: '50%', background: '#28c840' }} />
+                </div>
+                <div style={{ flex: 1, background: '#FFFFFF', border: '1px solid rgba(0,0,0,0.1)', borderRadius: 6, padding: '4px 10px', fontSize: 11, color: '#64748b', textAlign: 'center' }}>🔒 app.gradsource.co.uk</div>
               </div>
-              <div style={{ minHeight: 380 }}>
-                {step === 1 && <Step1 />}
-                {step === 2 && <Step2 />}
-                {step === 3 && <Step3 />}
-                {step === 4 && <Step4 />}
+              {/* Progress bar — fixed below title bar */}
+              <div style={{ flexShrink: 0, background: '#0A0F1E', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
+                <span style={{ fontSize: 11, color: '#94A3B8', whiteSpace: 'nowrap', fontFamily: 'DM Sans, sans-serif' }}>Step {step} of 6</span>
+                <div style={{ flex: 1, height: 4, background: 'rgba(255,255,255,0.12)', borderRadius: 2 }}>
+                  <div style={{ height: '100%', width: `${(step / 6) * 100}%`, background: 'linear-gradient(90deg,#F5C842,#D4A017)', borderRadius: 2, transition: 'width 0.4s ease' }} />
+                </div>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'center', gap: 8, padding: '16px 0', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
-                {[1, 2, 3, 4].map(s => (
-                  <div key={s} style={{ width: s === step ? 20 : 8, height: 8, borderRadius: 4, background: s === step ? '#D4A017' : 'rgba(0,0,0,0.1)', transition: 'all 0.3s' }} />
-                ))}
+              {/* Step content — scrollable middle */}
+              <div style={{ flex: 1, overflowY: 'auto', opacity: fade ? 1 : 0, transition: 'opacity 0.3s ease' }}>
+                {step === 1 && <DemoStep1 go={go} />}
+                {step === 2 && <DemoStep2 go={go} />}
+                {step === 3 && <DemoStep3 go={go} />}
+                {step === 4 && <DemoStep4 go={go} />}
+                {step === 5 && <DemoStep5 go={go} dismissedCards={dismissedCards} dismissCard={dismissCard} toast={toast} />}
+                {step === 6 && <DemoStep6 go={go} restart={restart} />}
+              </div>
+              {/* Step dots + restart — fixed bottom */}
+              <div style={{ flexShrink: 0, borderTop: '1px solid rgba(0,0,0,0.06)', padding: '12px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  {[1, 2, 3, 4, 5, 6].map(s => (
+                    <div key={s} style={{ width: s === step ? 22 : 8, height: 8, borderRadius: 4, background: s <= step ? '#D4A017' : 'rgba(0,0,0,0.1)', transition: 'all 0.3s' }} />
+                  ))}
+                </div>
+                <button onClick={restart} style={{ background: 'none', border: 'none', color: '#94A3B8', fontSize: 12, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif' }}>↩ Restart Demo</button>
               </div>
             </div>
+            <p style={{ textAlign: 'center', marginTop: 14, fontSize: 13, color: '#94A3B8', fontFamily: 'DM Sans, sans-serif' }}>Interactive demo — click through the full candidate journey</p>
           </div>
         </div>
       </div>
@@ -502,132 +666,280 @@ function CandidateDemo() {
 }
 
 // ─── EMPLOYER DEMO ────────────────────────────────────────────────────────────
-function EmployerDemo() {
-  const [step, setStep] = useState(1)
-  const [toast, setToast] = useState(null)
-  const [rowsVisible, setRowsVisible] = useState(false)
-  const ref = useScrollAnimation()
-
-  const showToast = (name) => {
-    setToast(`Interview invitation sent to ${name}`)
-    setTimeout(() => setToast(null), 3000)
-  }
-
-  useEffect(() => {
-    if (step === 3) setTimeout(() => setRowsVisible(true), 100)
-  }, [step])
-
-  const criteria = [
-    { label: 'CV / Experience', pct: 15, note: 'Min 1yr experience' },
-    { label: 'Education', pct: 10, note: '2:1 Finance degree' },
-    { label: 'Aptitude Test', pct: 20, note: 'Top 20%' },
-    { label: 'Technical Assessment', pct: 25, note: 'Top 5% financial modelling' },
-    { label: 'AI Simulation', pct: 20, note: 'Sales roleplay' },
-    { label: 'LinkedIn', pct: 10, note: 'Active profile, 200+ connections' },
-  ]
-
-  const Step1 = () => (
-    <div style={{ padding: 32 }}>
+function EmpStep1({ go }) {
+  return (
+    <div style={{ padding: '32px 28px' }}>
       <div style={{ textAlign: 'center', marginBottom: 28 }}>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-          <div style={{ background: 'linear-gradient(135deg,#F5C842,#D4A017)', borderRadius: 6, padding: 5, display: 'flex' }}><Building2 size={14} color="#0A0F1E" /></div>
-          <span className="font-syne" style={{ color: '#0A0F1E', fontWeight: 700 }}>GradSource Employer</span>
+          <div style={{ background: 'linear-gradient(135deg,#F5C842,#D4A017)', borderRadius: 6, padding: '5px 6px', display: 'flex' }}><Building2 size={14} color="#0A0F1E" /></div>
+          <span className="font-syne" style={{ color: '#0A0F1E', fontWeight: 800, fontSize: 16 }}>GradSource</span>
         </div>
-        <p style={{ color: '#64748b', fontSize: 13 }}>Sign in to your employer account</p>
-      </div>
-      <label style={{ display: 'block', color: '#475569', fontSize: 12, marginBottom: 6 }}>Email</label>
-      <div style={{ background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.12)', borderRadius: 8, padding: '10px 14px', marginBottom: 24, color: '#0A0F1E', fontSize: 14 }}>hiring@apexcapital.co.uk</div>
-      <button onClick={() => setStep(2)} style={{ width: '100%', background: 'linear-gradient(135deg,#F5C842,#D4A017)', color: '#0A0F1E', border: 'none', borderRadius: 8, padding: '12px', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>Sign In as Employer</button>
-    </div>
-  )
-
-  const Step2 = () => (
-    <div style={{ padding: 20 }}>
-      <h3 className="font-syne" style={{ color: '#0A0F1E', fontSize: 14, fontWeight: 700, marginBottom: 14 }}>Create Job Listing</h3>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 14 }}>
-        {[['Job Title', 'Junior Financial Analyst'], ['Company', 'Apex Capital'], ['Sector', 'Fintech'], ['Location', 'London Hybrid'], ['Salary', '£32,000–£38,000']].map(([k, v]) => (
-          <div key={k} style={{ background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.08)', borderRadius: 7, padding: '8px 10px', gridColumn: k === 'Job Title' || k === 'Salary' ? 'span 2' : undefined }}>
-            <div style={{ color: '#64748b', fontSize: 9, marginBottom: 2 }}>{k.toUpperCase()}</div>
-            <div style={{ color: '#0A0F1E', fontSize: 12, fontWeight: 500 }}>{v}</div>
-          </div>
-        ))}
+        <h3 className="font-syne" style={{ color: '#0A0F1E', fontWeight: 800, fontSize: 20, marginBottom: 6 }}>Welcome to GradSource</h3>
+        <p style={{ color: '#64748b', fontSize: 13 }}>Sign in to your employer dashboard</p>
       </div>
       <div style={{ marginBottom: 14 }}>
-        <div style={{ color: '#475569', fontSize: 11, marginBottom: 8, fontWeight: 600 }}>CRITERIA WEIGHTING</div>
-        {criteria.map(c => (
-          <div key={c.label} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-            <div style={{ flex: 1, fontSize: 11, color: '#64748b', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.label}</div>
-            <div style={{ width: 70, height: 5, background: 'rgba(0,0,0,0.08)', borderRadius: 3, overflow: 'hidden' }}>
-              <div style={{ height: '100%', width: `${c.pct * 4}%`, background: 'linear-gradient(90deg,#F5C842,#D4A017)', borderRadius: 3 }} />
-            </div>
-            <span style={{ color: '#D4A017', fontSize: 11, fontWeight: 700, width: 26 }}>{c.pct}%</span>
+        <label style={{ display: 'block', color: '#475569', fontSize: 12, fontWeight: 600, marginBottom: 6 }}>Email</label>
+        <div style={{ background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.12)', borderRadius: 8, padding: '10px 14px', color: '#0A0F1E', fontSize: 14 }}>hiring@apexcapital.co.uk</div>
+      </div>
+      <div style={{ marginBottom: 24 }}>
+        <label style={{ display: 'block', color: '#475569', fontSize: 12, fontWeight: 600, marginBottom: 6 }}>Password</label>
+        <div style={{ background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.12)', borderRadius: 8, padding: '10px 14px', color: '#0A0F1E', fontSize: 18, letterSpacing: 4 }}>••••••••</div>
+      </div>
+      <button onClick={() => go(2)} style={{ width: '100%', background: 'linear-gradient(135deg,#F5C842,#D4A017)', color: '#0A0F1E', border: 'none', borderRadius: 9, padding: '13px', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif' }}>Sign In as Employer</button>
+    </div>
+  )
+}
+
+function EmpStep2({ go }) {
+  return (
+    <div style={{ padding: '22px 20px' }}>
+      <h3 className="font-syne" style={{ color: '#0A0F1E', fontWeight: 800, fontSize: 18, marginBottom: 4 }}>Post a New Role</h3>
+      <p style={{ color: '#64748b', fontSize: 12, marginBottom: 16 }}>Tell us about the position you are hiring for</p>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 7, marginBottom: 24 }}>
+        {[
+          ['Job Title', 'Junior Financial Analyst', true],
+          ['Company', 'Apex Capital', false],
+          ['Sector', 'Fintech / Financial Services', true],
+          ['Location', 'London, UK (Hybrid)', false],
+          ['Salary', '£32,000 — £38,000', true],
+          ['Contract', 'Full-Time, Graduate Role', true],
+        ].map(([k, v, full]) => (
+          <div key={k} style={{ background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.07)', borderRadius: 8, padding: '8px 10px', gridColumn: full ? 'span 2' : undefined }}>
+            <div style={{ color: '#94A3B8', fontSize: 9, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 2 }}>{k}</div>
+            <div style={{ color: '#0A0F1E', fontSize: 12, fontWeight: 600 }}>{v}</div>
           </div>
         ))}
       </div>
-      <button onClick={() => { setStep(3); setRowsVisible(false) }} style={{ width: '100%', background: 'linear-gradient(135deg,#F5C842,#D4A017)', color: '#0A0F1E', border: 'none', borderRadius: 8, padding: '10px', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>Publish Role →</button>
+      <button onClick={() => go(3)} style={{ width: '100%', background: 'linear-gradient(135deg,#F5C842,#D4A017)', color: '#0A0F1E', border: 'none', borderRadius: 9, padding: '13px', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif' }}>
+        Set Hiring Criteria →
+      </button>
     </div>
   )
+}
 
-  const Step3 = () => (
-    <div style={{ padding: 16, position: 'relative' }}>
-      <div style={{ color: '#D4A017', fontSize: 12, fontWeight: 600, marginBottom: 12, marginTop: 316, display: 'flex', alignItems: 'center', gap: 6 }}>
-        <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#D4A017', animation: 'pulseRing 1.5s infinite' }} />
-        Junior Financial Analyst — Live Applicant Leaderboard
+function EmpStep3({ go }) {
+  const CRITERIA = [
+    { icon: '📋', label: 'CV & Experience', note: 'Minimum 1 year relevant experience' },
+    { icon: '🎓', label: 'Education', note: '2:1 or above, Finance degree' },
+    { icon: '🧠', label: 'Aptitude Test', note: 'Top 20% score required' },
+    { icon: '💻', label: 'Technical Assessment', note: 'Top 5% financial modelling' },
+    { icon: '🤖', label: 'AI Simulation', note: 'Strong sales roleplay performance' },
+    { icon: '🔗', label: 'LinkedIn', note: 'Active profile, 200+ connections' },
+  ]
+  const [weights, setWeights] = useState([15, 10, 20, 25, 20, 10])
+  const total = weights.reduce((s, v) => s + v, 0)
+  const ok = total === 100
+
+  const handleChange = (i, val) => {
+    const next = [...weights]
+    next[i] = val
+    setWeights(next)
+  }
+
+  return (
+    <div style={{ padding: '22px 20px' }}>
+      <h3 className="font-syne" style={{ color: '#0A0F1E', fontWeight: 800, fontSize: 18, marginBottom: 4 }}>Set Your Hiring Criteria</h3>
+      <p style={{ color: '#64748b', fontSize: 12, marginBottom: 16 }}>Weight what matters most. Total must equal 100%</p>
+      {CRITERIA.map((c, i) => (
+        <div key={c.label} style={{ marginBottom: 11 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 14 }}>{c.icon}</span>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 12, color: '#0A0F1E', fontWeight: 600 }}>{c.label}</div>
+              <div style={{ fontSize: 10, color: '#94A3B8' }}>{c.note}</div>
+            </div>
+            <span style={{ fontSize: 13, fontWeight: 700, color: '#D4A017', minWidth: 34, textAlign: 'right' }}>{weights[i]}%</span>
+          </div>
+          <input type="range" min={0} max={60} value={weights[i]} onChange={e => handleChange(i, Number(e.target.value))}
+            style={{ width: '100%', marginTop: 5, accentColor: '#F5C842', cursor: 'pointer' }} />
+        </div>
+      ))}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', background: ok ? 'rgba(34,197,94,0.07)' : 'rgba(239,68,68,0.07)', border: `1px solid ${ok ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.3)'}`, borderRadius: 8, marginBottom: 14, marginTop: 4 }}>
+        <span style={{ fontSize: 13, fontWeight: 700, color: ok ? '#15803d' : '#dc2626' }}>{ok ? '✅' : '⚠️'} Total: {total}%</span>
+        {!ok && <span style={{ fontSize: 11, color: '#dc2626' }}>— Adjust weightings to reach 100%</span>}
       </div>
-      <div style={{ overflowX: 'auto', marginBottom: 12 }}>
+      <button onClick={() => ok && go(4)} title={ok ? '' : 'Adjust weightings to 100% to publish'}
+        style={{ width: '100%', background: ok ? 'linear-gradient(135deg,#F5C842,#D4A017)' : 'rgba(0,0,0,0.07)', color: ok ? '#0A0F1E' : '#94A3B8', border: 'none', borderRadius: 9, padding: '13px', fontSize: 14, fontWeight: 700, cursor: ok ? 'pointer' : 'not-allowed', fontFamily: 'DM Sans, sans-serif', transition: 'all 0.2s' }}>
+        Publish Role →
+      </button>
+    </div>
+  )
+}
+
+function EmpStep4({ go }) {
+  const candidates = [
+    { letter: 'A', apt: 91, tech: 88, sim: 96, li: '✅', score: 95, realName: 'Sophia Rhodes', email: 'sophia.rhodes@lse.ac.uk' },
+    { letter: 'B', apt: 93, tech: 92, sim: 87, li: '✅', score: 91, realName: 'Marcus Thompson', email: 'm.thompson@warwick.ac.uk' },
+    { letter: 'C', apt: 89, tech: 95, sim: 85, li: '✅', score: 88, realName: 'Priya Kapoor', email: 'priya.k@imperial.ac.uk' },
+    { letter: 'D', apt: 82, tech: 79, sim: 88, li: '⚠️', score: 84, realName: 'James O\'Brien', email: 'j.obrien@ucl.ac.uk' },
+    { letter: 'E', apt: 85, tech: 81, sim: 82, li: '✅', score: 79, realName: 'Anika Singh', email: 'a.singh@bath.ac.uk' },
+  ]
+  const [modal, setModal] = useState(null)
+  const [rowStates, setRowStates] = useState(['idle', 'idle', 'idle', 'idle', 'idle'])
+  const [toast, setToast] = useState(null)
+  const [actionSent, setActionSent] = useState({})
+
+  const showToast = (msg, ms = 3500) => {
+    setToast(msg)
+    setTimeout(() => setToast(null), ms)
+  }
+
+  const handleConfirmPush = (idx) => {
+    setModal(null)
+    setRowStates(prev => { const n = [...prev]; n[idx] = 'awaiting'; return n })
+    showToast(`✅ Opportunity sent to Candidate ${candidates[idx].letter}`, 2200)
+    setTimeout(() => {
+      setRowStates(prev => { const n = [...prev]; n[idx] = 'revealed'; return n })
+      showToast(`🔔 Candidate ${candidates[idx].letter} accepted! Identity revealed: ${candidates[idx].realName} — ${candidates[idx].email}`, 4000)
+    }, 2500)
+  }
+
+  const handleAction = (idx) => {
+    setActionSent(prev => ({ ...prev, [idx]: true }))
+    showToast(`✅ Action sent to ${candidates[idx].realName}`)
+  }
+
+  return (
+    <div style={{ padding: '16px', position: 'relative' }}>
+      {/* Modal overlay — positions relative to frame div */}
+      {modal !== null && (
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(10,15,30,0.65)', zIndex: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+          <div style={{ background: '#FFFFFF', borderRadius: 14, padding: '24px 20px', width: '100%', maxWidth: 320, boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+            <h4 className="font-syne" style={{ color: '#0A0F1E', fontWeight: 800, fontSize: 15, marginBottom: 8 }}>Send this opportunity to Candidate {candidates[modal].letter}?</h4>
+            <p style={{ color: '#475569', fontSize: 12, lineHeight: 1.6, marginBottom: 20 }}>If they accept your interest, their full name and contact details will be revealed to you.</p>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button onClick={() => handleConfirmPush(modal)} style={{ flex: 1, background: 'linear-gradient(135deg,#F5C842,#D4A017)', color: '#0A0F1E', border: 'none', borderRadius: 8, padding: '10px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif' }}>Confirm Push →</button>
+              <button onClick={() => setModal(null)} style={{ flex: 1, background: 'none', color: '#64748b', border: '1px solid rgba(0,0,0,0.12)', borderRadius: 8, padding: '10px', fontSize: 13, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif' }}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Toast — positions relative to frame div */}
+      {toast && (
+        <div className="toast" style={{ position: 'absolute', top: 90, left: 12, right: 12, background: '#0A0F1E', color: '#F1F5F9', borderRadius: 8, padding: '9px 14px', fontSize: 11, zIndex: 15, lineHeight: 1.5 }}>{toast}</div>
+      )}
+
+      <h3 className="font-syne" style={{ color: '#0A0F1E', fontWeight: 800, fontSize: 15, marginBottom: 4 }}>Junior Financial Analyst — Live Leaderboard</h3>
+      <p style={{ color: '#64748b', fontSize: 11, marginBottom: 10 }}>Ranked in real time based on your criteria. Candidates are anonymous until they express interest.</p>
+      <div style={{ background: 'rgba(0,212,255,0.07)', border: '1px solid rgba(0,212,255,0.2)', borderRadius: 7, padding: '7px 10px', marginBottom: 12, fontSize: 11, color: '#0A0F1E' }}>
+        🔒 Candidate identities are hidden until they express interest in your role
+      </div>
+
+      <div style={{ overflowX: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
           <thead>
             <tr style={{ background: '#0A0F1E' }}>
-              {['#', 'Candidate', 'Apt', 'Tech', 'Sim', 'Score', 'Action'].map(h => (
-                <th key={h} style={{ padding: '6px 8px', color: '#FFFFFF', fontWeight: 600, textAlign: 'left', whiteSpace: 'nowrap', fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{h}</th>
+              {['#', 'Candidate', 'Apt', 'Tech', 'Sim', 'LI', 'Score', 'Action'].map(h => (
+                <th key={h} style={{ padding: '6px 5px', color: '#FFFFFF', fontWeight: 600, textAlign: 'left', fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {leaderboardData.map((row, i) => (
-              <tr key={row.rank} className={`slide-in-row ${rowsVisible ? 'visible' : ''}`}
-                style={{ borderBottom: '1px solid rgba(0,0,0,0.05)', transitionDelay: `${i * 120}ms`, background: row.rank === 1 ? 'rgba(245,200,66,0.08)' : i % 2 === 0 ? '#FFFFFF' : '#F8FAFC' }}>
-                <td style={{ padding: '8px', color: row.rank === 1 ? '#D4A017' : '#64748b', fontWeight: 700 }}>{row.rank}</td>
-                <td style={{ padding: '8px' }}>
-                  <div style={{ color: '#0A0F1E', fontWeight: 500 }}>{row.name}</div>
-                  <div style={{ color: '#64748b', fontSize: 10 }}>{row.uni}</div>
-                </td>
-                <td style={{ padding: '8px', color: '#D4A017', fontWeight: 600 }}>{row.aptitude}</td>
-                <td style={{ padding: '8px', color: '#1E3A5F', fontWeight: 600 }}>{row.technical}</td>
-                <td style={{ padding: '8px', color: '#64748b' }}>{row.simulation}</td>
-                <td style={{ padding: '8px' }}>
-                  <span style={{ background: row.rank === 1 ? 'rgba(245,200,66,0.15)' : 'rgba(30,58,95,0.08)', color: row.rank === 1 ? '#D4A017' : '#1E3A5F', borderRadius: 5, padding: '2px 7px', fontWeight: 700 }}>{row.score}</span>
-                </td>
-                <td style={{ padding: '8px' }}>
-                  <select onChange={e => { if (e.target.value) { showToast(row.name.split(' ')[0]); e.target.value = '' } }}
-                    style={{ background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.12)', color: '#1E3A5F', borderRadius: 5, padding: '3px 5px', fontSize: 10, cursor: 'pointer' }}>
-                    <option value="">Action</option>
-                    <option>Invite to Interview</option>
-                    <option>Request Further Assessment</option>
-                    <option>Send Additional Questions</option>
-                  </select>
-                </td>
-              </tr>
-            ))}
+            {candidates.map((c, i) => {
+              const state = rowStates[i]
+              const revealed = state === 'revealed'
+              return (
+                <tr key={c.letter}
+                  style={{ borderBottom: '1px solid rgba(0,0,0,0.05)', background: revealed ? 'rgba(34,197,94,0.06)' : i === 0 ? 'rgba(245,200,66,0.06)' : i % 2 === 0 ? '#FFFFFF' : '#F8FAFC' }}>
+                  <td style={{ padding: '7px 5px', fontWeight: 700, color: i === 0 ? '#D4A017' : '#64748b', fontSize: i === 0 ? 14 : 11 }}>{i === 0 ? '🥇' : i + 1}</td>
+                  <td style={{ padding: '7px 5px' }}>
+                    {revealed ? (
+                      <div>
+                        <div style={{ color: '#0A0F1E', fontWeight: 600, fontSize: 10 }}>{c.realName}</div>
+                        <div style={{ color: '#64748b', fontSize: 9 }}>{c.email}</div>
+                      </div>
+                    ) : (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, flexShrink: 0 }}>🔒</div>
+                        <span style={{ color: '#475569', fontSize: 10, fontWeight: 500 }}>Cand. {c.letter}</span>
+                      </div>
+                    )}
+                  </td>
+                  <td style={{ padding: '7px 5px', color: '#D4A017', fontWeight: 600 }}>{c.apt}</td>
+                  <td style={{ padding: '7px 5px', color: '#1E3A5F', fontWeight: 600 }}>{c.tech}</td>
+                  <td style={{ padding: '7px 5px', color: '#64748b' }}>{c.sim}</td>
+                  <td style={{ padding: '7px 5px', fontSize: 12 }}>{c.li}</td>
+                  <td style={{ padding: '7px 5px' }}>
+                    <span style={{ background: i === 0 ? 'rgba(245,200,66,0.15)' : 'rgba(30,58,95,0.08)', color: i === 0 ? '#D4A017' : '#1E3A5F', borderRadius: 5, padding: '2px 6px', fontWeight: 700 }}>{c.score}</span>
+                  </td>
+                  <td style={{ padding: '7px 5px' }}>
+                    {state === 'idle' && (
+                      <button onClick={() => setModal(i)} style={{ background: '#00D4FF', color: '#0A0F1E', border: 'none', borderRadius: 5, padding: '4px 7px', fontSize: 9, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap', fontFamily: 'DM Sans, sans-serif' }}>Push →</button>
+                    )}
+                    {state === 'awaiting' && <span style={{ fontSize: 9, color: '#94A3B8' }}>⏳ Awaiting...</span>}
+                    {state === 'revealed' && (
+                      actionSent[i] ? (
+                        <span style={{ fontSize: 9, color: '#22c55e' }}>✅ Sent</span>
+                      ) : (
+                        <select onChange={e => { if (e.target.value) { handleAction(i); e.target.value = '' } }}
+                          style={{ background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.12)', color: '#1E3A5F', borderRadius: 5, padding: '3px 3px', fontSize: 9, cursor: 'pointer', maxWidth: 70 }}>
+                          <option value="">Action ▾</option>
+                          <option>📅 Interview</option>
+                          <option>📝 Assessment</option>
+                          <option>❓ Questions</option>
+                        </select>
+                      )
+                    )}
+                  </td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
       </div>
-      <div style={{ display: 'flex', gap: 10, marginBottom: 12, flexWrap: 'wrap' }}>
-        {[['247', 'Total Applicants'], ['18', 'Completed All Criteria'], ['5', 'Shortlisted']].map(([v, l]) => (
-          <div key={l} style={{ background: 'rgba(245,200,66,0.07)', border: '1px solid rgba(245,200,66,0.2)', borderRadius: 7, padding: '6px 10px', flex: 1, minWidth: 60 }}>
-            <div style={{ color: '#D4A017', fontWeight: 800, fontSize: 14 }}>{v}</div>
-            <div style={{ color: '#64748b', fontSize: 10 }}>{l}</div>
+
+      <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap', marginTop: 12, marginBottom: 14 }}>
+        {[['247', 'applicants'], ['18', 'completed all'], ['5', 'shortlisted'], ['3 days', 'since posted']].map(([v, l]) => (
+          <div key={l} style={{ background: 'rgba(245,200,66,0.07)', border: '1px solid rgba(245,200,66,0.2)', borderRadius: 7, padding: '5px 8px' }}>
+            <span style={{ color: '#D4A017', fontWeight: 800, fontSize: 11 }}>{v}</span>
+            <span style={{ color: '#64748b', fontSize: 10 }}> {l}</span>
           </div>
         ))}
       </div>
-      {toast && (
-        <div className="toast" style={{ position: 'absolute', bottom: 60, left: '50%', transform: 'translateX(-50%)', background: 'rgba(245,200,66,0.1)', border: '1px solid rgba(245,200,66,0.3)', borderRadius: 8, padding: '8px 16px', color: '#D4A017', fontSize: 12, whiteSpace: 'nowrap', zIndex: 10 }}>
-          ✓ {toast}
-        </div>
-      )}
-      <button onClick={() => setStep(1)} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', fontSize: 11, textDecoration: 'underline', display: 'block', textAlign: 'center', width: '100%' }}>Restart Demo</button>
+
+      <div style={{ textAlign: 'center', padding: '10px 0 6px' }}>
+        <p className="font-syne" style={{ color: '#0A0F1E', fontSize: 13, fontWeight: 700, marginBottom: 10 }}>This is GradSource. Ready to hire smarter?</p>
+        <button onClick={() => go(5)} style={{ background: 'linear-gradient(135deg,#F5C842,#D4A017)', color: '#0A0F1E', border: 'none', borderRadius: 9, padding: '11px 24px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif' }}>Join Employer Waitlist →</button>
+      </div>
+      <button onClick={() => go(3)} style={{ display: 'block', margin: '10px auto 0', background: 'none', border: 'none', color: '#94A3B8', fontSize: 11, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif' }}>← Back to Criteria</button>
     </div>
   )
+}
+
+function EmpStep5({ restart }) {
+  return (
+    <div style={{ padding: '40px 28px', textAlign: 'center' }}>
+      <div style={{ fontSize: 52, lineHeight: 1, marginBottom: 16 }}>🎉</div>
+      <h3 className="font-syne" style={{ color: '#0A0F1E', fontWeight: 800, fontSize: 22, marginBottom: 10 }}>You're on the Early Access List</h3>
+      <p style={{ color: '#64748b', fontSize: 13, marginBottom: 28, lineHeight: 1.6 }}>We'll be in touch before launch with priority employer access.</p>
+      <div style={{ textAlign: 'left', background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.07)', borderRadius: 12, padding: '20px', marginBottom: 28 }}>
+        {[
+          'First 50 employers get 50% off their first hire',
+          'Priority access to the top candidate pool',
+          'Dedicated onboarding support',
+        ].map(b => (
+          <div key={b} style={{ display: 'flex', gap: 10, marginBottom: 12, fontSize: 13, color: '#475569', alignItems: 'flex-start', lineHeight: 1.5 }}>
+            <span style={{ color: '#22c55e', flexShrink: 0 }}>✅</span>
+            <span>{b}</span>
+          </div>
+        ))}
+      </div>
+      <button onClick={restart} style={{ background: 'none', border: 'none', color: '#94A3B8', fontSize: 13, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif' }}>↩ Restart Demo</button>
+    </div>
+  )
+}
+
+function EmployerDemo() {
+  const [step, setStep] = useState(1)
+  const [fade, setFade] = useState(true)
+  const ref = useScrollAnimation()
+
+  const go = (nextStep) => {
+    setFade(false)
+    setTimeout(() => { setStep(nextStep); setFade(true) }, 300)
+  }
+
+  const restart = () => go(1)
 
   return (
     <section ref={ref} style={{ padding: '100px 24px', background: '#FFFFFF' }}>
@@ -636,32 +948,50 @@ function EmployerDemo() {
           <div style={{ display: 'inline-block', background: 'rgba(245,200,66,0.1)', border: '1px solid rgba(245,200,66,0.3)', borderRadius: 100, padding: '5px 16px', marginBottom: 16 }}>
             <span style={{ fontSize: 12, color: '#D4A017', fontWeight: 600 }}>EMPLOYER EXPERIENCE</span>
           </div>
-          <h2 className="font-syne" style={{ fontSize: 'clamp(26px,4vw,44px)', fontWeight: 800, color: '#0A0F1E' }}>See It From an<br /><span style={{ background: 'linear-gradient(135deg,#F5C842,#D4A017)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Employer's Perspective</span></h2>
+          <h2 className="font-syne" style={{ fontSize: 'clamp(26px,4vw,44px)', fontWeight: 800, color: '#0A0F1E' }}>
+            See GradSource in Action —<br />
+            <span style={{ background: 'linear-gradient(135deg,#F5C842,#D4A017)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Employer View</span>
+          </h2>
         </div>
         <div className="fade-up" style={{ display: 'flex', justifyContent: 'center' }}>
-          <div style={{ width: '100%', maxWidth: 520 }}>
-            <div className="glow-border-gold" style={{ borderRadius: 16, background: '#FFFFFF', overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.08)' }}>
-              <div style={{ background: '#F8FAFC', padding: '12px 16px', borderBottom: '1px solid rgba(0,0,0,0.08)', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#ff5f57' }} />
-                <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#febc2e' }} />
-                <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#28c840' }} />
-                <span style={{ marginLeft: 8, fontSize: 12, color: '#64748b' }}>employer.gradsource.io</span>
+          <div style={{ width: '100%', maxWidth: 600 }}>
+            <div className="glow-border-gold" style={{ borderRadius: 16, background: '#FFFFFF', overflow: 'hidden', boxShadow: '0 12px 48px rgba(0,0,0,0.12)', position: 'relative', height: 700, display: 'flex', flexDirection: 'column' }}>
+              {/* Browser title bar — fixed top */}
+              <div style={{ flexShrink: 0, background: '#F1F5F9', padding: '10px 14px', borderBottom: '1px solid rgba(0,0,0,0.07)', display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  <div style={{ width: 11, height: 11, borderRadius: '50%', background: '#ff5f57' }} />
+                  <div style={{ width: 11, height: 11, borderRadius: '50%', background: '#febc2e' }} />
+                  <div style={{ width: 11, height: 11, borderRadius: '50%', background: '#28c840' }} />
+                </div>
+                <div style={{ flex: 1, background: '#FFFFFF', border: '1px solid rgba(0,0,0,0.1)', borderRadius: 6, padding: '4px 10px', fontSize: 11, color: '#64748b', textAlign: 'center' }}>🔒 app.gradsource.co.uk/employer</div>
               </div>
-              <div style={{ minHeight: 380 }}>
-                {step === 1 && <Step1 />}
-                {step === 2 && <Step2 />}
-                {step === 3 && <Step3 />}
+              {/* Progress bar — fixed below title bar */}
+              <div style={{ flexShrink: 0, background: '#0A0F1E', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
+                <span style={{ fontSize: 11, color: '#94A3B8', whiteSpace: 'nowrap', fontFamily: 'DM Sans, sans-serif' }}>Step {step} of 5</span>
+                <div style={{ flex: 1, height: 4, background: 'rgba(255,255,255,0.12)', borderRadius: 2 }}>
+                  <div style={{ height: '100%', width: `${(step / 5) * 100}%`, background: 'linear-gradient(90deg,#F5C842,#D4A017)', borderRadius: 2, transition: 'width 0.4s ease' }} />
+                </div>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'center', gap: 8, padding: '14px 0', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
-                {[1, 2, 3].map(s => (
-                  <div key={s} style={{ width: s === step ? 20 : 8, height: 8, borderRadius: 4, background: s === step ? '#D4A017' : 'rgba(0,0,0,0.1)', transition: 'all 0.3s' }} />
-                ))}
+              {/* Step content — scrollable middle */}
+              <div style={{ flex: 1, overflowY: 'auto', opacity: fade ? 1 : 0, transition: 'opacity 0.3s ease' }}>
+                {step === 1 && <EmpStep1 go={go} />}
+                {step === 2 && <EmpStep2 go={go} />}
+                {step === 3 && <EmpStep3 go={go} />}
+                {step === 4 && <EmpStep4 go={go} />}
+                {step === 5 && <EmpStep5 restart={restart} />}
+              </div>
+              {/* Step dots + restart — fixed bottom */}
+              <div style={{ flexShrink: 0, borderTop: '1px solid rgba(0,0,0,0.06)', padding: '12px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  {[1, 2, 3, 4, 5].map(s => (
+                    <div key={s} style={{ width: s === step ? 22 : 8, height: 8, borderRadius: 4, background: s <= step ? '#D4A017' : 'rgba(0,0,0,0.1)', transition: 'all 0.3s' }} />
+                  ))}
+                </div>
+                <button onClick={restart} style={{ background: 'none', border: 'none', color: '#94A3B8', fontSize: 12, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif' }}>↩ Restart Demo</button>
               </div>
             </div>
+            <p style={{ textAlign: 'center', marginTop: 14, fontSize: 13, color: '#94A3B8', fontFamily: 'DM Sans, sans-serif' }}>Interactive demo — click through the full employer journey</p>
           </div>
-        </div>
-        <div className="fade-up" style={{ textAlign: 'center', marginTop: 40 }}>
-          <p className="font-syne" style={{ fontSize: 20, color: '#475569', marginBottom: 4 }}>This is GradSource. Ready to hire smarter?</p>
         </div>
       </div>
     </section>
