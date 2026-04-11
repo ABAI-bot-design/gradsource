@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import AboutPage from './pages/AboutPage'
+import Graston from './components/Graston'
 import {
   Zap, Menu, X, ChevronRight, Trophy, Star, TrendingUp, Users, CheckCircle,
   XCircle, BarChart2, Brain, Linkedin, FileText, GraduationCap, Target,
@@ -42,6 +43,11 @@ body { background: #FFFFFF; font-family: 'Inter', sans-serif; color: #0A0F1E; }
 .page-transition { transition: opacity 0.3s ease; }
 .back-btn { display: inline-flex; align-items: center; gap: 6px; background: none; border: 1px solid rgba(0,0,0,0.12); border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 600; color: #475569; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.2s; }
 .back-btn:hover { border-color: #D4A017; color: #D4A017; }
+.roi-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 3px; background: linear-gradient(to right, #D4A017 0%, #D4A017 var(--value-percent, 50%), #E2E8F0 var(--value-percent, 50%), #E2E8F0 100%); outline: none; cursor: pointer; }
+.roi-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #D4A017; cursor: pointer; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: transform 0.1s ease, box-shadow 0.1s ease; }
+.roi-slider::-webkit-slider-thumb:hover { transform: scale(1.2); box-shadow: 0 4px 12px rgba(212,160,23,0.4); }
+.roi-slider::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: #D4A017; cursor: pointer; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+.roi-value { transition: all 0.2s ease; }
 `
 
 const BREVO_API_KEY = import.meta.env.VITE_BREVO_API_KEY
@@ -1093,34 +1099,94 @@ function ForEmployers({ onWaitlist, onNavigate }) {
   )
 }
 
+// ─── ROI SLIDER ───────────────────────────────────────────────────────────────
+function ROISlider({ label, min, max, value, onChange, prefix = '', suffix = '', step = 1, subLabel }) {
+  const trackRef = useRef(null)
+  const percent = ((value - min) / (max - min)) * 100
+
+  const computeValue = (clientX) => {
+    const rect = trackRef.current.getBoundingClientRect()
+    const ratio = Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1)
+    const raw = min + ratio * (max - min)
+    return Math.round(raw / step) * step
+  }
+
+  const handleMouseDown = (e) => {
+    e.preventDefault()
+    onChange(computeValue(e.clientX))
+    const onMove = (e) => onChange(computeValue(e.clientX))
+    const onUp = () => {
+      document.removeEventListener('mousemove', onMove)
+      document.removeEventListener('mouseup', onUp)
+    }
+    document.addEventListener('mousemove', onMove)
+    document.addEventListener('mouseup', onUp)
+  }
+
+  const handleTouchStart = (e) => {
+    e.preventDefault()
+    onChange(computeValue(e.touches[0].clientX))
+    const onMove = (e) => onChange(computeValue(e.touches[0].clientX))
+    const onEnd = () => {
+      document.removeEventListener('touchmove', onMove)
+      document.removeEventListener('touchend', onEnd)
+    }
+    document.addEventListener('touchmove', onMove, { passive: false })
+    document.addEventListener('touchend', onEnd)
+  }
+
+  return (
+    <div style={{ marginBottom: 28 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 10 }}>
+        <span style={{ fontSize: 14, color: '#475569', fontWeight: 500 }}>{label}</span>
+        <span className="font-syne" style={{ fontSize: 20, fontWeight: 800, color: '#D4A017' }}>
+          {prefix}{value.toLocaleString('en-GB')}{suffix}
+        </span>
+      </div>
+      <div
+        ref={trackRef}
+        onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
+        style={{ position: 'relative', height: 6, borderRadius: 3, background: '#E2E8F0', cursor: 'pointer', userSelect: 'none' }}
+      >
+        {/* filled portion */}
+        <div style={{ position: 'absolute', left: 0, top: 0, height: '100%', width: `${percent}%`, borderRadius: 3, background: 'linear-gradient(to right, #F5C842, #D4A017)', pointerEvents: 'none' }} />
+        {/* thumb */}
+        <div style={{
+          position: 'absolute', top: '50%', left: `${percent}%`,
+          transform: 'translate(-50%, -50%)',
+          width: 20, height: 20, borderRadius: '50%',
+          background: '#D4A017', border: '3px solid white',
+          boxShadow: '0 2px 6px rgba(0,0,0,0.18)',
+          pointerEvents: 'none',
+          transition: 'box-shadow 0.1s ease',
+        }} />
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6 }}>
+        <span style={{ fontSize: 11, color: '#94a3b8' }}>{prefix}{min.toLocaleString('en-GB')}{suffix}</span>
+        {subLabel && <span style={{ fontSize: 11, color: '#D4A017', fontWeight: 600 }}>{subLabel}</span>}
+        <span style={{ fontSize: 11, color: '#94a3b8' }}>{prefix}{max.toLocaleString('en-GB')}{suffix}</span>
+      </div>
+    </div>
+  )
+}
+
 // ─── ROI CALCULATOR ────────────────────────────────────────────────────────────
 function ROICalculator({ onWaitlist }) {
   const [hires, setHires] = useState(5)
   const [hoursPerHire, setHoursPerHire] = useState(40)
   const [hourlyRate, setHourlyRate] = useState(60)
+  const [salary, setSalary] = useState(35000)
   const ref = useScrollAnimation()
 
-  const traditionalCost = (8500 * hires) + (hoursPerHire * hourlyRate * hires)
-  const gradSourceCost = (1999 * hires) + (8 * hourlyRate * hires)
-  const hoursSaved = (hoursPerHire - 8) * hires
+  const recruiterFee = Math.round(salary * 0.125)
+  const gsHours = Math.round(hoursPerHire * 0.5)
+  const traditionalCost = (recruiterFee * hires) + (hoursPerHire * hourlyRate * hires)
+  const gradSourceCost = (1999 * hires) + (gsHours * hourlyRate * hires)
+  const hoursSaved = (hoursPerHire - gsHours) * hires
   const totalSaving = traditionalCost - gradSourceCost
 
   const fmt = (n) => '£' + n.toLocaleString('en-GB')
-
-  const Slider = ({ label, min, max, value, onChange, prefix = '', suffix = '' }) => (
-    <div style={{ marginBottom: 28 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
-        <span style={{ fontSize: 14, color: '#475569', fontWeight: 500 }}>{label}</span>
-        <span className="font-syne" style={{ fontSize: 20, fontWeight: 800, color: '#D4A017' }}>{prefix}{value.toLocaleString('en-GB')}{suffix}</span>
-      </div>
-      <input type="range" min={min} max={max} value={value} onChange={e => onChange(Number(e.target.value))}
-        style={{ width: '100%', accentColor: '#D4A017', cursor: 'pointer', height: 4 }} />
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
-        <span style={{ fontSize: 11, color: '#94a3b8' }}>{prefix}{min}{suffix}</span>
-        <span style={{ fontSize: 11, color: '#94a3b8' }}>{prefix}{max}{suffix}</span>
-      </div>
-    </div>
-  )
 
   return (
     <section ref={ref} style={{ padding: '100px 24px', background: '#FFFFFF' }}>
@@ -1140,9 +1206,12 @@ function ROICalculator({ onWaitlist }) {
           {/* Sliders */}
           <div style={{ background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.08)', borderRadius: 20, padding: '36px 32px' }}>
             <h3 className="font-syne" style={{ fontSize: 17, fontWeight: 700, color: '#0A0F1E', marginBottom: 28 }}>Your Hiring Profile</h3>
-            <Slider label="Number of hires per year" min={1} max={20} value={hires} onChange={setHires} />
-            <Slider label="Hours spent screening per hire" min={10} max={80} value={hoursPerHire} onChange={setHoursPerHire} suffix=" hrs" />
-            <Slider label="Your hourly cost of internal time" min={20} max={150} value={hourlyRate} onChange={setHourlyRate} prefix="£" />
+            <ROISlider label="Number of hires per year" min={1} max={20} value={hires} onChange={setHires} />
+            <ROISlider label="Average graduate starting salary" min={25000} max={75000} step={1000} value={salary} onChange={setSalary} prefix="£"
+              subLabel={`Recruiter fee: ${fmt(recruiterFee)}/hire`} />
+            <ROISlider label="Hours spent screening per hire" min={10} max={80} value={hoursPerHire} onChange={setHoursPerHire} suffix=" hrs"
+              subLabel={`GradSource: ${gsHours} hrs · Traditional: ${hoursPerHire} hrs`} />
+            <ROISlider label="Your hourly cost of internal time" min={20} max={150} value={hourlyRate} onChange={setHourlyRate} prefix="£" />
           </div>
           {/* Results */}
           <div>
@@ -1150,24 +1219,24 @@ function ROICalculator({ onWaitlist }) {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 24 }}>
                 <div style={{ background: '#FFFFFF', border: '1px solid rgba(0,0,0,0.08)', borderRadius: 12, padding: 20 }}>
                   <div style={{ fontSize: 12, color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>Traditional Cost</div>
-                  <div className="font-syne" style={{ fontSize: 22, fontWeight: 800, color: '#475569' }}>{fmt(traditionalCost)}</div>
+                  <div className="font-syne roi-value" style={{ fontSize: 22, fontWeight: 800, color: '#475569' }}>{fmt(traditionalCost)}</div>
                   <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 4 }}>Recruiter fees + internal time</div>
                 </div>
                 <div style={{ background: 'rgba(245,200,66,0.06)', border: '1px solid rgba(245,200,66,0.3)', borderRadius: 12, padding: 20 }}>
                   <div style={{ fontSize: 12, color: '#D4A017', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>GradSource Cost</div>
-                  <div className="font-syne" style={{ fontSize: 22, fontWeight: 800, color: '#D4A017' }}>{fmt(gradSourceCost)}</div>
-                  <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 4 }}>£1,999/hire + ~8hrs screening</div>
+                  <div className="font-syne roi-value" style={{ fontSize: 22, fontWeight: 800, color: '#D4A017' }}>{fmt(gradSourceCost)}</div>
+                  <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 4 }}>£1,999/hire + {gsHours} hrs screening</div>
                 </div>
               </div>
               <div style={{ background: 'linear-gradient(135deg, rgba(245,200,66,0.08), rgba(212,160,23,0.04))', border: '1px solid rgba(245,200,66,0.35)', borderRadius: 16, padding: '24px 28px', textAlign: 'center' }}>
                 <div style={{ fontSize: 13, color: '#64748b', marginBottom: 6 }}>Total Annual Saving</div>
-                <div className="font-syne" style={{ fontSize: 'clamp(32px,5vw,48px)', fontWeight: 800, color: '#D4A017', lineHeight: 1 }}>{fmt(totalSaving)}</div>
+                <div className="font-syne roi-value" style={{ fontSize: 'clamp(32px,5vw,48px)', fontWeight: 800, color: '#D4A017', lineHeight: 1 }}>{fmt(totalSaving)}</div>
                 <div style={{ fontSize: 14, color: '#475569', marginTop: 10 }}>
                   That's <strong style={{ color: '#0A0F1E' }}>{hoursSaved.toLocaleString('en-GB')} hours</strong> back and <strong style={{ color: '#D4A017' }}>{fmt(totalSaving)}</strong> saved every year
                 </div>
               </div>
             </div>
-            <button onClick={onWaitlist} style={{ width: '100%', background: 'linear-gradient(135deg,#F5C842,#D4A017)', color: '#0A0F1E', border: 'none', borderRadius: 12, padding: '15px 24px', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif' }}>
+            <button onClick={onWaitlist} style={{ width: '100%', background: 'linear-gradient(135deg,#F5C842,#D4A017)', color: '#0A0F1E', border: 'none', borderRadius: 12, padding: '15px 24px', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}>
               Start saving — join the employer waitlist
             </button>
           </div>
@@ -2246,6 +2315,7 @@ export default function App() {
           )}
         </div>
         <WaitlistModal open={modalOpen} onClose={() => setModalOpen(false)} />
+        <Graston />
       </div>
     </>
   )
