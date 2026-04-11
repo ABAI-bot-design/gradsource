@@ -140,10 +140,14 @@ export default function Graston() {
     setLoading(true)
 
     try {
+      // Anthropic requires conversations to start with role:'user' — strip any leading assistant messages
+      const firstUserIndex = next.findIndex(m => m.role === 'user')
+      const apiMessages = firstUserIndex >= 0 ? next.slice(firstUserIndex) : next
+
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: next, system: SYSTEM_PROMPT }),
+        body: JSON.stringify({ messages: apiMessages, system: SYSTEM_PROMPT }),
       })
       const data = await res.json()
       const reply = data.text || data.error || 'Sorry, something went wrong.'

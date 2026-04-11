@@ -11,11 +11,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  console.log('API key present:', !!process.env.ANTHROPIC_API_KEY);
-  console.log('Request body:', req.body);
-
   try {
     const { messages, system } = req.body;
+
+    console.log('API key present:', !!process.env.ANTHROPIC_API_KEY);
+    console.log('Messages received:', JSON.stringify(messages));
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -33,15 +33,18 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
-    console.log('Anthropic response status:', response.status);
-    console.log('Anthropic response data:', JSON.stringify(data));
+    console.log('Anthropic response:', JSON.stringify(data));
+
+    if (data.error) {
+      console.error('Anthropic error:', data.error);
+      return res.status(500).json({ error: data.error.message });
+    }
+
     const text = data.content[0].text;
     return res.status(200).json({ text });
 
   } catch (error) {
-    console.error('Graston error:', error);
-    return res.status(500).json({
-      error: 'Graston is having a moment — please try again.'
-    });
+    console.error('Full error:', error.message, error.stack);
+    return res.status(500).json({ error: error.message });
   }
 }
