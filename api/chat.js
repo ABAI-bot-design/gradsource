@@ -11,6 +11,9 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  console.log('API key present:', !!process.env.ANTHROPIC_API_KEY);
+  console.log('Request body:', req.body);
+
   try {
     const { messages, system } = req.body;
 
@@ -30,6 +33,8 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
+    console.log('Anthropic response status:', response.status);
+    console.log('Anthropic response data:', JSON.stringify(data));
     const text = data.content[0].text;
     return res.status(200).json({ text });
 
