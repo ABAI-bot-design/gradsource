@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import AboutPage from './pages/AboutPage'
 import {
   Zap, Menu, X, ChevronRight, Trophy, Star, TrendingUp, Users, CheckCircle,
   XCircle, BarChart2, Brain, Linkedin, FileText, GraduationCap, Target,
@@ -7,11 +8,11 @@ import {
 } from 'lucide-react'
 
 const FONTS = `
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { width: 100%; overflow-x: hidden; }
-body { background: #FFFFFF; font-family: 'DM Sans', sans-serif; color: #0A0F1E; }
-.font-syne { font-family: 'Syne', sans-serif; }
+body { background: #FFFFFF; font-family: 'Inter', sans-serif; color: #0A0F1E; }
+.font-syne { font-family: 'Inter', sans-serif; }
 .dot-grid {
   background-image: radial-gradient(circle, rgba(245,200,66,0.22) 1px, transparent 1px);
   background-size: 28px 28px;
@@ -39,7 +40,7 @@ body { background: #FFFFFF; font-family: 'DM Sans', sans-serif; color: #0A0F1E; 
 .tab-active { border-bottom: 2px solid #D4A017; color: #D4A017; }
 .score-bar { transition: width 1.2s ease; }
 .page-transition { transition: opacity 0.3s ease; }
-.back-btn { display: inline-flex; align-items: center; gap: 6px; background: none; border: 1px solid rgba(0,0,0,0.12); border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 600; color: #475569; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+.back-btn { display: inline-flex; align-items: center; gap: 6px; background: none; border: 1px solid rgba(0,0,0,0.12); border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 600; color: #475569; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.2s; }
 .back-btn:hover { border-color: #D4A017; color: #D4A017; }
 `
 
@@ -129,6 +130,7 @@ function Nav({ onWaitlist, onNavigate }) {
     { label: 'For Candidates', action: () => onNavigate('candidate') },
     { label: 'For Employers', action: () => onNavigate('employer') },
     { label: 'How It Works', action: () => scrollTo('how-it-works') },
+    { label: 'About', action: () => onNavigate('about') },
     { label: 'Pricing', action: () => scrollTo('pricing') },
   ]
 
@@ -265,7 +267,7 @@ function Hero({ onWaitlist, onNavigate }) {
               </button>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 24, marginTop: 40, flexWrap: 'wrap' }}>
-              {[['287+', 'Candidates Joined'], ['31+', 'Employers Interested'], ['Free', 'For Candidates']].map(([v, l]) => (
+              {[['Growing', 'Waitlist'], ['Early Access', 'Employers'], ['Free', 'For Candidates']].map(([v, l]) => (
                 <div key={l}>
                   <div className="font-syne" style={{ fontSize: 22, fontWeight: 700, color: '#D4A017' }}>{v}</div>
                   <div style={{ fontSize: 12, color: '#64748b' }}>{l}</div>
@@ -1186,7 +1188,6 @@ const comparisonRows = [
   { label: 'Pay only on success',              gs: true, gsSub: 'Yes',              rec: false, recSub: 'Fees regardless', jb: false, jbSub: 'Subscription fee' },
   { label: 'Graduate sector focus',            gs: true, gsSub: 'Financial sector specific', rec: false, recSub: 'General market', jb: false, jbSub: 'General market' },
   { label: 'Reduces application fatigue',      gs: true, gsSub: 'Assess once match many', rec: false, jb: false },
-  { label: 'Quality hire success rate',        gs: '87%',                           rec: '52%',                          jb: '34%' },
 ]
 
 function ComparisonTable() {
@@ -1357,62 +1358,25 @@ function AIFeedback({ onWaitlist, onNavigate }) {
   )
 }
 
-// ─── TESTIMONIALS ─────────────────────────────────────────────────────────────
-const testimonials = [
-  { quote: 'We interviewed 3 candidates from GradSource and hired 2 of them. The leaderboard made it immediately obvious who was worth our time. Saved us weeks of screening.', name: 'James Whitfield', title: 'Head of Talent, Apex Capital', type: 'employer' },
-  { quote: 'Every other platform just rejected me with no feedback. GradSource told me exactly what I needed to improve and I landed my first role in fintech within 6 weeks.', name: 'Priya Sharma', title: 'Graduate Analyst, Meridian Bank', type: 'candidate' },
-  { quote: 'The anonymised leaderboard is genius. We focus entirely on performance, not names or universities. It\'s changed how we think about hiring completely.', name: 'Sarah Chen', title: 'COO, Vortex Markets', type: 'employer' },
-  { quote: 'I finally understood why I kept failing interviews. The AI feedback was more useful than anything my university careers service ever told me.', name: 'Marcus Thompson', title: 'LSE Finance Graduate', type: 'candidate' },
-  { quote: 'At £1,999 per hire versus the £8,500 we were paying recruiters, the ROI is obvious. And the quality of pre-screened candidates is genuinely better.', name: 'David Okafor', title: 'Founding Partner, Crestline Advisors', type: 'employer' },
-  { quote: 'The simulation felt like a real client call. It was intense but I knew exactly what employers were looking for going into interviews. Game changer.', name: 'Anika Reeves', title: 'Bath University, now at Barclays', type: 'candidate' },
-]
-
-function Testimonials() {
+// ─── EARLY ACCESS CTA ─────────────────────────────────────────────────────────
+function Testimonials({ onWaitlist }) {
   const ref = useScrollAnimation()
   return (
     <section ref={ref} style={{ padding: '100px 24px', background: '#F8FAFC' }}>
-      <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-        <div className="fade-up" style={{ textAlign: 'center', marginBottom: 64 }}>
-          <div style={{ display: 'inline-block', background: 'rgba(245,200,66,0.1)', border: '1px solid rgba(245,200,66,0.3)', borderRadius: 100, padding: '5px 16px', marginBottom: 16 }}>
-            <span style={{ fontSize: 12, color: '#D4A017', fontWeight: 600 }}>TESTIMONIALS</span>
-          </div>
-          <h2 className="font-syne" style={{ fontSize: 'clamp(26px,4vw,44px)', fontWeight: 800, color: '#0A0F1E', marginBottom: 12 }}>
-            What People Are Saying
+      <div style={{ maxWidth: 640, margin: '0 auto', textAlign: 'center' }}>
+        <div className="fade-up">
+          <h2 className="font-syne" style={{ fontSize: 'clamp(26px,4vw,44px)', fontWeight: 800, color: '#0A0F1E', marginBottom: 16 }}>
+            Be Among the First
           </h2>
-          <p style={{ color: '#64748b', fontSize: 16 }}>Early feedback from our beta users</p>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
-          {testimonials.map((t, i) => (
-            <div key={t.name} className="fade-up" style={{
-              background: '#FFFFFF',
-              borderRadius: 16,
-              padding: 28,
-              borderLeft: `4px solid ${t.type === 'employer' ? '#D4A017' : '#1E3A5F'}`,
-              boxShadow: '0 4px 24px rgba(0,0,0,0.05)',
-              transitionDelay: `${i * 80}ms`,
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-            }}>
-              <div>
-                <div style={{ display: 'flex', gap: 2, marginBottom: 16 }}>
-                  {[...Array(5)].map((_, s) => (
-                    <Star key={s} size={14} fill="#F5C842" color="#F5C842" />
-                  ))}
-                </div>
-                <p style={{ color: '#475569', fontSize: 14, lineHeight: 1.75, marginBottom: 20, fontStyle: 'italic' }}>"{t.quote}"</p>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <div style={{ width: 38, height: 38, borderRadius: '50%', background: t.type === 'employer' ? 'linear-gradient(135deg,#F5C842,#D4A017)' : 'linear-gradient(135deg,#1E3A5F,#0A0F1E)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <span className="font-syne" style={{ fontSize: 13, fontWeight: 800, color: t.type === 'employer' ? '#0A0F1E' : '#FFFFFF' }}>{t.name.split(' ').map(w => w[0]).join('')}</span>
-                </div>
-                <div>
-                  <div className="font-syne" style={{ fontSize: 14, fontWeight: 700, color: '#0A0F1E' }}>{t.name}</div>
-                  <div style={{ fontSize: 12, color: '#64748b' }}>{t.title}</div>
-                </div>
-              </div>
-            </div>
-          ))}
+          <p style={{ color: '#64748b', fontSize: 18, lineHeight: 1.7, marginBottom: 36 }}>
+            GradSource is in early access. Join the waitlist and help shape the platform.
+          </p>
+          <button
+            onClick={onWaitlist}
+            style={{ background: 'linear-gradient(135deg,#F5C842,#D4A017)', color: '#0A0F1E', border: 'none', borderRadius: 10, padding: '14px 32px', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif' }}
+          >
+            Join the Waitlist
+          </button>
         </div>
       </div>
     </section>
@@ -1522,13 +1486,13 @@ function Waitlist() {
           <div style={{ display: 'flex', gap: 24, justifyContent: 'center', flexWrap: 'wrap', marginTop: 16 }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(245,200,66,0.1)', border: '1px solid rgba(245,200,66,0.3)', borderRadius: 100, padding: '8px 20px' }}>
               <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#D4A017', animation: 'pulseRing 1.5s infinite' }} />
-              <span style={{ color: '#D4A017', fontWeight: 700 }}>{count}</span>
-              <span style={{ color: '#64748b', fontSize: 14 }}>candidates joined</span>
+              <span style={{ color: '#D4A017', fontWeight: 700 }}>Growing</span>
+              <span style={{ color: '#64748b', fontSize: 14 }}>Waitlist</span>
             </div>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(30,58,95,0.06)', border: '1px solid rgba(30,58,95,0.2)', borderRadius: 100, padding: '8px 20px' }}>
               <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#1E3A5F', animation: 'pulseRing 1.5s infinite' }} />
-              <span style={{ color: '#1E3A5F', fontWeight: 700 }}>31</span>
-              <span style={{ color: '#64748b', fontSize: 14 }}>employers interested</span>
+              <span style={{ color: '#1E3A5F', fontWeight: 700 }}>Early Access</span>
+              <span style={{ color: '#64748b', fontSize: 14 }}>Employers</span>
             </div>
           </div>
         </div>
@@ -1622,8 +1586,87 @@ function Partnerships() {
   )
 }
 
+// ─── ABOUT ────────────────────────────────────────────────────────────────────
+function About() {
+  const ref = useScrollAnimation()
+  return (
+    <section ref={ref} style={{ background: '#F8F8F8', padding: '100px 24px' }}>
+      <div style={{ maxWidth: 900, margin: '0 auto' }}>
+        <div className="fade-up" style={{ textAlign: 'center', marginBottom: 56 }}>
+          <h2 className="font-syne" style={{ fontSize: 'clamp(26px,4vw,44px)', fontWeight: 800, color: '#0A0F1E' }}>
+            The Person Behind GradSource
+          </h2>
+        </div>
+
+        {/* Photos */}
+        <div className="fade-up" style={{ display: 'flex', gap: 24, marginBottom: 48, flexWrap: 'wrap', justifyContent: 'center' }}>
+          <div style={{ flex: '1 1 280px', maxWidth: 400 }}>
+            <img
+              src="/aston-golf.jpeg"
+              alt="Aston at TPC Sawgrass"
+              style={{ width: '100%', height: 300, objectFit: 'cover', borderRadius: 12, boxShadow: '0 8px 32px rgba(0,0,0,0.12)' }}
+            />
+            <p style={{ textAlign: 'center', color: '#64748b', fontSize: 13, marginTop: 10 }}>⛳ TPC Sawgrass — best course I've played</p>
+          </div>
+          <div style={{ flex: '1 1 280px', maxWidth: 400 }}>
+            <img
+              src="/aston-girlfriend.jpeg"
+              alt="Aston with his girlfriend"
+              style={{ width: '100%', height: 300, objectFit: 'cover', borderRadius: 12, boxShadow: '0 8px 32px rgba(0,0,0,0.12)' }}
+            />
+            <p style={{ textAlign: 'center', color: '#64748b', fontSize: 13, marginTop: 10 }}>The people who keep me going</p>
+          </div>
+        </div>
+
+        {/* Main text */}
+        <div className="fade-up" style={{ maxWidth: 720, margin: '0 auto 40px' }}>
+          {[
+            "Hi, I'm Aston.",
+            "I'm a final year Management student at the University of Nottingham. Like most people in my year, I felt the pressure — from parents, from peers — to start applying for graduate jobs. So I did. I spent hours on every application, completed assessment after assessment, and mostly got ghosted or rejected with no explanation and no feedback.",
+            "What hit hardest wasn't my own experience — it was watching some of the brightest people I know burn out from the process. Talented, driven people struggling not because they lacked ability, but because the system was never designed to find it. GradSource exists because I believe that is worth fixing.",
+            "I want to build a company that creates real long-term value — and I think the way to do that is to genuinely improve people's lives. Helping someone find the right career feels like exactly that. I also want GradSource to show other people that you can turn a frustration into something meaningful. That building your own thing is a real option.",
+            "Outside of GradSource, I'm on the padel court, on the golf course, and spending time with the people I care about — family and my girlfriend keep me grounded and remind me why this is worth building.",
+          ].map((para, i) => (
+            <p key={i} style={{ color: i === 0 ? '#0A0F1E' : '#475569', fontSize: i === 0 ? 20 : 16, fontWeight: i === 0 ? 700 : 400, lineHeight: 1.8, marginBottom: 16 }}>
+              {para}
+            </p>
+          ))}
+          <p className="font-syne" style={{ fontSize: 13, fontWeight: 700, color: '#D4A017', letterSpacing: '0.08em', textTransform: 'uppercase', marginTop: 24 }}>
+            Aston Buck — Founder, GradSource
+          </p>
+        </div>
+
+        {/* Currently Reading card */}
+        <div className="fade-up" style={{ maxWidth: 720, margin: '0 auto' }}>
+          <div style={{ background: '#FFFFFF', borderLeft: '4px solid #D4A017', borderRadius: 12, padding: '24px 28px', boxShadow: '0 4px 20px rgba(0,0,0,0.07)', marginBottom: 16 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#D4A017', marginBottom: 8 }}>📖 Currently Reading</div>
+            <div className="font-syne" style={{ fontSize: 18, fontWeight: 800, color: '#0A0F1E', marginBottom: 10 }}>Barbarians at the Gate</div>
+            <p style={{ color: '#475569', fontSize: 14, lineHeight: 1.75, margin: 0 }}>
+              A book about how the most entrenched processes in finance were turned upside down almost overnight. It's a good reminder that the way things have always been done is never the way they always will be.
+            </p>
+          </div>
+
+          {/* Favourite book */}
+          <p style={{ color: '#94a3b8', fontSize: 13, marginBottom: 40 }}>
+            Favourite book: Zero to One — Peter Thiel
+          </p>
+
+          {/* Fun details strip */}
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            {['⛳ Golf', '🎾 Padel', '📖 Reader', '👨‍👩‍👧 Family First'].map(tag => (
+              <div key={tag} style={{ background: '#FFFFFF', border: '1px solid rgba(30,58,95,0.12)', borderRadius: 100, padding: '6px 16px', fontSize: 13, color: '#334155', fontWeight: 500, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+                {tag}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 // ─── FOOTER ───────────────────────────────────────────────────────────────────
-function Footer() {
+export function Footer({ onNavigate }) {
   return (
     <footer style={{ background: '#0A0F1E', borderTop: '1px solid rgba(245,200,66,0.12)', padding: '60px 24px 32px' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
@@ -1657,7 +1700,9 @@ function Footer() {
             <div key={col.title}>
               <div style={{ color: '#94a3b8', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16 }}>{col.title}</div>
               {col.links.map(l => (
-                <a key={l} href="#" style={{ display: 'block', color: '#475569', fontSize: 13, marginBottom: 10, textDecoration: 'none', transition: 'color 0.2s' }}
+                <a key={l} href="#"
+                  onClick={l === 'About' && onNavigate ? e => { e.preventDefault(); onNavigate('about') } : undefined}
+                  style={{ display: 'block', color: '#475569', fontSize: 13, marginBottom: 10, textDecoration: 'none', transition: 'color 0.2s' }}
                   onMouseEnter={e => e.target.style.color = '#F5C842'}
                   onMouseLeave={e => e.target.style.color = '#475569'}>{l}</a>
               ))}
@@ -1665,7 +1710,7 @@ function Footer() {
           ))}
         </div>
         <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 24, display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ color: '#334155', fontSize: 12 }}>© 2025 GradSource Ltd. All rights reserved.</span>
+          <span style={{ color: '#334155', fontSize: 12 }}>© 2025 GradSource. All rights reserved.</span>
           <span style={{ color: '#334155', fontSize: 12 }}>Built for the next generation of financial talent.</span>
         </div>
       </div>
@@ -2182,11 +2227,12 @@ export default function App() {
               <ComparisonTable />
               <HowItWorks />
               <AIFeedback onWaitlist={openWaitlist} onNavigate={navigate} />
-              <Testimonials />
+              <Testimonials onWaitlist={openWaitlist} />
               <Pricing onWaitlist={openWaitlist} />
               <Waitlist />
               <Partnerships />
-              <Footer />
+              <About />
+              <Footer onNavigate={navigate} />
             </>
           )}
           {displayPage === 'candidate' && (
@@ -2194,6 +2240,9 @@ export default function App() {
           )}
           {displayPage === 'employer' && (
             <EmployerPage onBack={() => navigate('home')} onWaitlist={openWaitlist} />
+          )}
+          {displayPage === 'about' && (
+            <AboutPage onNavigate={navigate} onWaitlist={openWaitlist} />
           )}
         </div>
         <WaitlistModal open={modalOpen} onClose={() => setModalOpen(false)} />

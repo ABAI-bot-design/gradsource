@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GradSource — TikTok Slides</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@800&family=DM+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #1a1a1a;
+      padding: 40px 0;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    /* SVG noise filter */
+    .noise-filter {
+      position: absolute;
+      width: 0;
+      height: 0;
+    }
+
+    .slide {
+      width: 1080px;
+      height: 1920px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 96px;
+      margin: 0 auto 32px auto;
+      overflow: hidden;
+    }
+
+    /* Noise overlay for dark slides */
+    .slide-dark::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      filter: url(#noise);
+      opacity: 0.04;
+      pointer-events: none;
+      z-index: 0;
+      background: white;
+    }
+
+    /* Light slide border */
+    .slide-light {
+      border: 1px solid #E2E8F0;
+    }
+
+    .slide > * { position: relative; z-index: 1; }
+
+    /* Slide number */
+    .slide-num {
+      position: absolute;
+      top: 72px;
+      right: 96px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: 2px;
+      z-index: 2;
+    }
+
+    /* Logo */
+    .logo {
+      position: absolute;
+      bottom: 80px;
+      left: 96px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      z-index: 2;
+    }
+
+    /* Content block */
+    .content {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+    }
+
+    /* Tag */
+    .tag {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    /* Accent line */
+    .accent {
+      width: 48px;
+      height: 4px;
+      border-radius: 2px;
+      margin-bottom: 40px;
+    }
+
+    /* Headline */
+    .headline {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 40px;
+    }
+
+    /* Subtext */
+    .subtext {
+      line-height: 1.5;
+    }
+
+    /* ─── SLIDE 1 ─── */
+    #s1 { background: #0A0F1E; }
+    #s1 .slide-num { color: rgba(255,255,255,0.2); }
+    #s1 .tag { color: #F5C842; }
+    #s1 .accent { background: #F5C842; }
+    #s1 .headline { color: #FFFFFF; font-size: 72px; }
+    #s1 .subtext { color: #94A3B8; font-size: 32px; font-style: italic; }
+    #s1 .logo { color: #F5C842; }
+
+    /* ─── SLIDE 2 ─── */
+    #s2 { background: #FFFFFF; }
+    #s2 .slide-num { color: rgba(0,0,0,0.18); }
+    #s2 .tag { color: #475569; }
+    #s2 .accent { background: #0A0F1E; }
+    #s2 .headline { color: #0A0F1E; font-size: 68px; }
+    #s2 .subtext { color: #64748B; font-size: 30px; font-style: italic; }
+    #s2 .logo { color: #0A0F1E; }
+
+    /* ─── SLIDE 3 ─── */
+    #s3 { background: #0A0F1E; }
+    #s3 .slide-num { color: rgba(255,255,255,0.2); }
+    #s3 .tag { color: #00D4FF; }
+    #s3 .accent { background: #00D4FF; }
+    #s3 .headline { color: #FFFFFF; font-size: 76px; }
+    #s3 .subtext { color: #94A3B8; font-size: 30px; font-style: italic; }
+    #s3 .logo { color: #F5C842; }
+
+    /* ─── SLIDE 4 ─── */
+    #s4 { background: #F5C842; }
+    #s4 .slide-num { color: rgba(0,0,0,0.2); }
+    #s4 .tag { color: #92670A; }
+    #s4 .accent { background: #0A0F1E; }
+    #s4 .headline { color: #0A0F1E; font-size: 68px; }
+    #s4 .subtext { color: #5C4A1E; font-size: 30px; font-style: italic; }
+    #s4 .logo { color: #0A0F1E; }
+
+    /* ─── SLIDE 5 ─── */
+    #s5 { background: #0A0F1E; }
+    #s5 .slide-num { color: rgba(255,255,255,0.2); }
+    #s5 .tag { color: #F5C842; }
+    #s5 .accent { background: #F5C842; }
+    #s5 .headline { color: #FFFFFF; font-size: 72px; }
+    #s5 .subtext { color: #94A3B8; font-size: 30px; font-style: italic; }
+    #s5 .logo { color: #F5C842; }
+
+    /* ─── SLIDE 6 ─── */
+    #s6 { background: #FFFFFF; }
+    #s6 .slide-num { color: rgba(0,0,0,0.18); }
+    #s6 .tag { color: #475569; }
+    #s6 .accent { background: #F5C842; }
+    #s6 .headline { color: #0A0F1E; font-size: 72px; }
+    #s6 .subtext { color: #64748B; font-size: 30px; font-style: italic; }
+    #s6 .logo { color: #0A0F1E; }
+
+    /* ─── SLIDE 7 ─── */
+    #s7 { background: #0A0F1E; }
+    #s7 .slide-num { color: rgba(255,255,255,0.2); }
+    #s7 .tag { color: #00D4FF; }
+    #s7 .accent { background: #00D4FF; }
+    #s7 .headline { color: #FFFFFF; font-size: 68px; }
+    #s7 .subtext { color: #94A3B8; font-size: 30px; font-style: italic; }
+    #s7 .logo { color: #F5C842; }
+
+    /* ─── SLIDE 8 ─── */
+    #s8 { background: #F5C842; }
+    #s8 .slide-num { color: rgba(0,0,0,0.2); }
+    #s8 .accent { background: #0A0F1E; }
+    #s8 .headline { color: #0A0F1E; font-size: 86px; }
+    #s8 .subtext { color: #5C4A1E; font-size: 34px; font-weight: 600; font-style: normal; }
+    #s8 .logo { color: #0A0F1E; }
+  </style>
+</head>
+<body>
+
+  <!-- SVG noise filter -->
+  <svg class="noise-filter" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="noise" x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" result="noise" />
+        <feColorMatrix type="saturate" values="0" in="noise" result="grayNoise" />
+        <feBlend in="SourceGraphic" in2="grayNoise" mode="overlay" />
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- ─── SLIDE 1 ─── -->
+  <div class="slide slide-dark" id="s1">
+    <span class="slide-num">01</span>
+    <div class="content">
+      <span class="tag">Real Talk</span>
+      <div class="accent"></div>
+      <h1 class="headline">You've applied to<br />40 jobs. Heard<br />back from 3.</h1>
+      <p class="subtext">And still no idea what<br />you're doing wrong.</p>
+    </div>
+    <span class="logo">GradSource</span>
+  </div>
+
+  <!-- ─── SLIDE 2 ─── -->
+  <div class="slide slide-light" id="s2">
+    <span class="slide-num">02</span>
+    <div class="content">
+      <span class="tag">The Grind</span>
+      <div class="accent"></div>
+      <h1 class="headline">Same test. Different<br />company. Every.<br />Single. Time.</h1>
+      <p class="subtext">Hours of your life. Gone.<br />No feedback. No reason.</p>
+    </div>
+    <span class="logo">GradSource</span>
+  </div>
+
+  <!-- ─── SLIDE 3 ─── -->
+  <div class="slide slide-dark" id="s3">
+    <span class="slide-num">03</span>
+    <div class="content">
+      <span class="tag">The Worst Part</span>
+      <div class="accent"></div>
+      <h1 class="headline">They never tell<br />you why you<br />failed.</h1>
+      <p class="subtext">Just an automated email.<br />Thanks for applying. Good luck.</p>
+    </div>
+    <span class="logo">GradSource</span>
+  </div>
+
+  <!-- ─── SLIDE 4 ─── -->
+  <div class="slide" id="s4">
+    <span class="slide-num">04</span>
+    <div class="content">
+      <span class="tag">There's a Fix</span>
+      <div class="accent"></div>
+      <h1 class="headline">What if you only<br />had to do one<br />assessment.</h1>
+      <p class="subtext">And it got you in front of hundreds<br />of finance roles at once.</p>
+    </div>
+    <span class="logo">GradSource</span>
+  </div>
+
+  <!-- ─── SLIDE 5 ─── -->
+  <div class="slide slide-dark" id="s5">
+    <span class="slide-num">05</span>
+    <div class="content">
+      <span class="tag">How It Works</span>
+      <div class="accent"></div>
+      <h1 class="headline">GradSource assesses<br />you once.<br />Properly.</h1>
+      <p class="subtext">Aptitude. Financial modelling.<br />Simulations. The real stuff<br />employers actually care about.</p>
+    </div>
+    <span class="logo">GradSource</span>
+  </div>
+
+  <!-- ─── SLIDE 6 ─── -->
+  <div class="slide slide-light" id="s6">
+    <span class="slide-num">06</span>
+    <div class="content">
+      <span class="tag">Then What</span>
+      <div class="accent"></div>
+      <h1 class="headline">Perform well and<br />firms come<br />to you.</h1>
+      <p class="subtext">Boutique financial firms and fintechs<br />reach out directly. You don't<br />chase them.</p>
+    </div>
+    <span class="logo">GradSource</span>
+  </div>
+
+  <!-- ─── SLIDE 7 ─── -->
+  <div class="slide slide-dark" id="s7">
+    <span class="slide-num">07</span>
+    <div class="content">
+      <span class="tag">And Finally</span>
+      <div class="accent"></div>
+      <h1 class="headline">You find out exactly<br />what you need<br />to improve.</h1>
+      <p class="subtext">Real AI feedback. What employers<br />want. What you're missing.<br />No more guessing.</p>
+    </div>
+    <span class="logo">GradSource</span>
+  </div>
+
+  <!-- ─── SLIDE 8 ─── -->
+  <div class="slide" id="s8">
+    <span class="slide-num">08</span>
+    <div class="content">
+      <div class="accent"></div>
+      <h1 class="headline">Stop applying<br />into the void.</h1>
+      <p class="subtext">GradSource is free for graduates.<br />Link in bio. 🎓</p>
+    </div>
+    <span class="logo">GradSource</span>
+  </div>
+
+</body>
+</html>
